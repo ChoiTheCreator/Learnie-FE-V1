@@ -27,15 +27,13 @@ export interface LoginRequest {
   password: string;
 }
 
+// 스웨거 API 문서에 따른 로그인 응답 구조
 export interface LoginResponse {
-  name?: string;
+  id?: number;
+  userId?: string;
   username?: string;
-  user_id?: string;
-  email?: string;
-  aiTutorToken?: string;
-  token?: string;
-  language?: Language | string; // 백엔드에서 "ja", "ko" 등 다양한 형식으로 올 수 있음
-  // API 응답 형식에 따라 추가 가능
+  message?: string;
+  language?: Language | string; // 백엔드에서 "JP", "KR" 등 대문자로 올 수 있음
 }
 
 export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
