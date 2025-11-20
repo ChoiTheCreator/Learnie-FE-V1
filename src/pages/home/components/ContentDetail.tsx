@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
+import { useAuth } from "../../../store/useAuthStore";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
 
 const LANGUAGE_OPTIONS = [
-  { code: "ko" as const, label: "한국어" },
-  { code: "en" as const, label: "English" },
-  { code: "zh" as const, label: "中文" },
-  { code: "ja" as const, label: "日本語" },
-  { code: "vi" as const, label: "Tiếng Việt" },
-  { code: "mn" as const, label: "Монгол" },
+  { code: "KR" as const, label: "한국어" },
+  { code: "CN" as const, label: "中文" },
+  { code: "EN" as const, label: "English" },
+  { code: "JP" as const, label: "日本語" },
+  { code: "VI" as const, label: "Tiếng Việt" },
 ] as const;
 
 // 임시 퀴즈 데이터
@@ -36,7 +36,15 @@ const ContentDetail = () => {
   const { contentId } = useParams<{ contentId: string }>();
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
+  const { session } = useAuth();
   const t = translations[language].home;
+
+  // 로그인된 경우 세션의 언어를 우선 사용
+  useEffect(() => {
+    if (session?.language) {
+      setLanguage(session.language);
+    }
+  }, [session, setLanguage]);
 
   const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "advanced">(
     "summary"

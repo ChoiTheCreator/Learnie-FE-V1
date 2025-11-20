@@ -9,16 +9,15 @@ import {
 import { useAuth } from "../../../store/useAuthStore";
 
 const LANGUAGE_OPTIONS: { code: Language; label: string }[] = [
-  { code: "ko", label: "한국어" },
-  { code: "en", label: "English" },
-  { code: "zh", label: "中文" },
-  { code: "ja", label: "日本語" },
-  { code: "vi", label: "Tiếng Việt" },
-  { code: "mn", label: "Монгол" },
+  { code: "KR", label: "한국어" },
+  { code: "CN", label: "中文" },
+  { code: "EN", label: "English" },
+  { code: "JP", label: "日本語" },
+  { code: "VI", label: "Tiếng Việt" },
 ];
 
 const SignupForm = () => {
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const { signup } = useAuth();
   const navigate = useNavigate();
   const [userid, setUserid] = useState("");
@@ -29,7 +28,7 @@ const SignupForm = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const t = translations[language].signup;
+  const t = translations[selectedLanguage].signup;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,7 +82,7 @@ const SignupForm = () => {
             <input
               id="userid"
               type="text"
-              placeholder="사용자 ID를 입력하세요"
+              placeholder={t.useridPlaceholder}
               value={userid}
               onChange={(e) => setUserid(e.target.value)}
               disabled={isLoading}
@@ -151,12 +150,19 @@ const SignupForm = () => {
             <select
               id="language"
               value={selectedLanguage}
-              onChange={(e) => setSelectedLanguage(e.target.value as Language)}
+              onChange={(e) => {
+                const newLanguage = e.target.value as Language;
+                setSelectedLanguage(newLanguage);
+                setLanguage(newLanguage); // 언어 스토어도 함께 업데이트
+              }}
               disabled={isLoading}
               className="px-5 py-4 rounded-lg bg-white border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               required
               aria-required="true"
             >
+              <option value="" disabled>
+                {t.languagePlaceholder}
+              </option>
               {LANGUAGE_OPTIONS.map((option) => (
                 <option key={option.code} value={option.code}>
                   {option.label}

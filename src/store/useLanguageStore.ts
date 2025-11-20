@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type Language = "ko" | "en" | "zh" | "ja" | "vi" | "mn";
+export type Language = "KR" | "CN" | "EN" | "JP" | "VI";
 
 interface LanguageState {
   language: Language;
@@ -9,12 +9,25 @@ interface LanguageState {
 
 // localStorage에서 언어 불러오기
 const getStoredLanguage = (): Language => {
-  if (typeof window === "undefined") return "ko";
+  if (typeof window === "undefined") return "KR";
   const stored = localStorage.getItem("userLanguage");
-  if (stored && ["ko", "en", "zh", "ja", "vi", "mn"].includes(stored)) {
-    return stored as Language;
+  // 기존 코드(ko, en 등)와 새 코드(KR, EN 등) 모두 지원
+  const languageMap: Record<string, Language> = {
+    ko: "KR",
+    en: "EN",
+    zh: "CN",
+    ja: "JP",
+    vi: "VI",
+    KR: "KR",
+    EN: "EN",
+    CN: "CN",
+    JP: "JP",
+    VI: "VI",
+  };
+  if (stored && languageMap[stored]) {
+    return languageMap[stored];
   }
-  return "ko";
+  return "KR";
 };
 
 export const useLanguage = create<LanguageState>((set) => ({
@@ -27,7 +40,7 @@ export const useLanguage = create<LanguageState>((set) => ({
 
 // 언어별 텍스트 정의
 export const translations = {
-  ko: {
+  KR: {
     intro: [
       "1단계 : 알아듣지 못하는 강의를 업로드하세요",
       "2단계 : 모국어로 번역된 수업 요약본을 보고 학습",
@@ -40,6 +53,7 @@ export const translations = {
       title: "Orbit AI 시작하기",
       name: "이름",
       namePlaceholder: "이름을 입력하세요",
+      useridPlaceholder: "사용자 ID를 입력하세요",
       email: "이메일",
       emailPlaceholder: "이메일을 입력하세요",
       password: "비밀번호",
@@ -116,9 +130,23 @@ export const translations = {
         cancel: "취소",
         confirm: "확인",
       },
+      uploadArea: {
+        title: "파일을 첨부해 주세요!",
+        description: "파일을 드래그하거나 클릭하여 업로드하세요",
+      },
+    },
+    userMenu: {
+      editProfile: "회원 수정",
+      deleteAccount: "회원 삭제",
+      deleteAccountModal: {
+        title: "회원 삭제",
+        message: "정말 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        cancel: "취소",
+        confirm: "삭제",
+      },
     },
   },
-  en: {
+  EN: {
     intro: [
       "Step 1: Upload lectures you don't understand",
       "Step 2: Review and learn from the translated lecture summary in your native language",
@@ -131,6 +159,7 @@ export const translations = {
       title: "Get Started with Orbit AI",
       name: "Name",
       namePlaceholder: "Enter your name",
+      useridPlaceholder: "Enter your user ID",
       email: "Email",
       emailPlaceholder: "Enter your email",
       password: "Password",
@@ -208,9 +237,24 @@ export const translations = {
         cancel: "Cancel",
         confirm: "Confirm",
       },
+      uploadArea: {
+        title: "Please attach a file!",
+        description: "Drag or click to upload files",
+      },
+    },
+    userMenu: {
+      editProfile: "Edit Profile",
+      deleteAccount: "Delete Account",
+      deleteAccountModal: {
+        title: "Delete Account",
+        message:
+          "Are you sure you want to delete your account? This action cannot be undone.",
+        cancel: "Cancel",
+        confirm: "Delete",
+      },
     },
   },
-  zh: {
+  CN: {
     intro: [
       "第1步：上传您听不懂的讲座",
       "第2步：查看并学习用您的母语翻译的课程摘要",
@@ -223,6 +267,7 @@ export const translations = {
       title: "开始使用Orbit AI",
       name: "姓名",
       namePlaceholder: "请输入您的姓名",
+      useridPlaceholder: "请输入您的用户ID",
       email: "电子邮件",
       emailPlaceholder: "请输入您的电子邮件",
       password: "密码",
@@ -298,9 +343,23 @@ export const translations = {
         cancel: "取消",
         confirm: "确认",
       },
+      uploadArea: {
+        title: "请附加文件！",
+        description: "拖放或点击上传文件",
+      },
+    },
+    userMenu: {
+      editProfile: "编辑资料",
+      deleteAccount: "删除账户",
+      deleteAccountModal: {
+        title: "删除账户",
+        message: "您确定要删除您的账户吗？此操作无法撤销。",
+        cancel: "取消",
+        confirm: "删除",
+      },
     },
   },
-  ja: {
+  JP: {
     intro: [
       "ステップ1：理解できない講義をアップロードしてください",
       "ステップ2：母国語に翻訳された授業の要約を見て学習してください",
@@ -313,6 +372,7 @@ export const translations = {
       title: "Orbit AIを始める",
       name: "名前",
       namePlaceholder: "お名前を入力してください",
+      useridPlaceholder: "ユーザーIDを入力してください",
       email: "メールアドレス",
       emailPlaceholder: "メールアドレスを入力してください",
       password: "パスワード",
@@ -389,9 +449,24 @@ export const translations = {
         cancel: "キャンセル",
         confirm: "確認",
       },
+      uploadArea: {
+        title: "ファイルを添付してください！",
+        description:
+          "ファイルをドラッグまたはクリックしてアップロードしてください",
+      },
+    },
+    userMenu: {
+      editProfile: "プロフィール編集",
+      deleteAccount: "アカウント削除",
+      deleteAccountModal: {
+        title: "アカウント削除",
+        message: "本当にアカウントを削除しますか？この操作は元に戻せません。",
+        cancel: "キャンセル",
+        confirm: "削除",
+      },
     },
   },
-  vi: {
+  VI: {
     intro: [
       "Bước 1: Tải lên các bài giảng bạn không hiểu",
       "Bước 2: Xem và học từ bản tóm tắt bài giảng được dịch sang ngôn ngữ mẹ đẻ của bạn",
@@ -404,6 +479,7 @@ export const translations = {
       title: "Bắt đầu với Orbit AI",
       name: "Tên",
       namePlaceholder: "Nhập tên của bạn",
+      useridPlaceholder: "Nhập ID người dùng của bạn",
       email: "Email",
       emailPlaceholder: "Nhập email của bạn",
       password: "Mật khẩu",
@@ -480,96 +556,20 @@ export const translations = {
         cancel: "Hủy",
         confirm: "Xác nhận",
       },
-    },
-  },
-  mn: {
-    intro: [
-      "1-р алхам: Ойлгохгүй лекцээ байршуулна уу",
-      "2-р алхам: Эх хэлээр орчуулсан хичээлийн хураангуйг харж суралцана",
-      "3-р алхам: Үүссэн асуудлуудыг харж суралцана уу",
-      "4-р алхам: Хичээлийн гүнзгий талуудыг хамарсан дэвшилтэт агуулгаас ч суралцана уу",
-      "Orbit-тэй хамт суралцъя уу?",
-    ],
-    title: "Orbit",
-    signup: {
-      title: "Orbit AI-ээр эхлэх",
-      name: "Нэр",
-      namePlaceholder: "Нэрээ оруулна уу",
-      email: "Имэйл",
-      emailPlaceholder: "Имэйлээ оруулна уу",
-      password: "Нууц үг",
-      passwordPlaceholder: "Нууц үгээ оруулна уу",
-      confirmPassword: "Нууц үг баталгаажуулах",
-      confirmPasswordPlaceholder: "Нууц үгээ дахин оруулна уу",
-      language: "Хэл",
-      languagePlaceholder: "Хэл сонгох",
-      signupButton: "Бүртгүүлэх",
-      signupLoading: "Бүртгүүлж байна...",
-      loginLink: "Аль хэдийн бүртгэлтэй юу?",
-      loginButton: "Нэвтрэх",
-      errors: {
-        allFieldsRequired: "Бүх талбарыг бөглөнө үү",
-        passwordMismatch: "Нууц үг тохирохгүй байна",
-        passwordTooShort: "Нууц үг дор хаяж 8 тэмдэгт байх ёстой",
-        signupFailed: "Бүртгүүлэх амжилтгүй боллоо",
+      uploadArea: {
+        title: "Vui lòng đính kèm tệp!",
+        description: "Kéo thả hoặc nhấp để tải tệp lên",
       },
     },
-    home: {
-      greeting: "Сайн уу!",
-      welcomeMessage: "Би Хон Гиль-дон профессорт туслах AI багш байна",
-      homeTitle: "Нүүр",
-      uploadFile: "Файл байршуулах",
-      emptyState: {
-        title: "Лекцийн видеогоо байршуулна уу",
-        description:
-          "Файлуудыг чирж эсвэл дарж лекцийн видеогоо байршуулж болно!",
-      },
-      sidebar: {
-        home: "Нүүр",
-        courses: "Хичээлийн сэдвүүд",
-        schoolTips: "Сургуулийн зөвлөмж",
-        logout: "Гарах",
-      },
-      content: {
-        translation: "Орчуулга",
-        summary: "Хураангуй",
-        quiz: "Асуулт",
-        advanced: "Дэвшилтэт",
-        number: "Дугаар",
-        back: "Буцах",
-        summaryContent: "Лекцийн бичлэгийн хураангуйг энд харуулах болно.",
-        quizContent: "Асуултын агуулгыг энд харуулах болно.",
-        advancedContent: "Дэвшилтэт агуулгыг энд харуулах болно.",
-        quizNumber: "Асуултын дугаар",
-        questionCount: "Асуултын тоо",
-        difficulty: "Хүндрэл",
-        createdAt: "Үүсгэсэн огноо",
-        download: "Татах",
-        delete: "Устгах",
-        createQuiz: "Асуулт үүсгэх",
-        quizGenerationComplete: "Асуулт үүсгэх дууссан",
-        select: "Сонгох",
-        problem: "Асуудал",
-        answer: "Хариулт",
-        questionType: "Асуултын төрөл",
-        generatePDF: "PDF үүсгэх",
-        showAnswer: "Хариулт харуулах",
-        hideAnswer: "Хариулт нуух",
-        maxQuestions: "Хамгийн ихдээ",
-        questions: "асуулт",
-        difficultyHigh: "Өндөр",
-        difficultyMedium: "Дунд",
-        difficultyLow: "Бага",
-        questionTypeShortAnswer: "Богино хариулт",
-        questionTypeTrueFalse: "Тийм/Үгүй",
-        questionTypeMultipleChoice: "Олон сонголт",
-        generateQuiz: "Асуултын хуудас үүсгэх",
-      },
-      uploadModal: {
-        fileInfo: "Файлын мэдээлэл",
-        classTitle: "Хичээлийн гарчиг оруулах",
-        cancel: "Цуцлах",
-        confirm: "Баталгаажуулах",
+    userMenu: {
+      editProfile: "Chỉnh sửa hồ sơ",
+      deleteAccount: "Xóa tài khoản",
+      deleteAccountModal: {
+        title: "Xóa tài khoản",
+        message:
+          "Bạn có chắc chắn muốn xóa tài khoản của mình không? Hành động này không thể hoàn tác.",
+        cancel: "Hủy",
+        confirm: "Xóa",
       },
     },
   },

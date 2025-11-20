@@ -39,12 +39,21 @@ export const useAuth = create<AuthState>((set) => ({
     set({ status: "loading", error: null });
 
     try {
+      // 언어 코드를 API 형식으로 변환 (KR -> ko, EN -> en 등)
+      const languageMap: Record<Language, string> = {
+        KR: "ko",
+        CN: "zh",
+        EN: "en",
+        JP: "ja",
+        VI: "vi",
+      };
+
       // API 호출 - API 스펙에 맞게 데이터 변환
       await signupAPI({
         user_id: userid,
         username: username,
         password: password,
-        language: language,
+        language: languageMap[language] || language.toLowerCase(),
       });
 
       // 언어를 localStorage에 저장
@@ -97,9 +106,27 @@ export const useAuth = create<AuthState>((set) => ({
       const token = loginResponse.aiTutorToken || loginResponse.token || "";
 
       // 언어 추출 (응답에 없으면 기본값 사용)
-      const userLanguage = (loginResponse.language ||
-        localStorage.getItem("userLanguage") ||
-        "ko") as Language;
+      // 기존 코드(ko, en 등)와 새 코드(KR, EN 등) 모두 지원
+      const storedLang = localStorage.getItem("userLanguage");
+      const languageMap: Record<string, Language> = {
+        ko: "KR",
+        en: "EN",
+        zh: "CN",
+        ja: "JP",
+        vi: "VI",
+        KR: "KR",
+        EN: "EN",
+        CN: "CN",
+        JP: "JP",
+        VI: "VI",
+      };
+      const userLanguage = (
+        loginResponse.language
+          ? languageMap[loginResponse.language] || loginResponse.language
+          : storedLang
+          ? languageMap[storedLang] || (storedLang as Language)
+          : "KR"
+      ) as Language;
 
       // 세션 데이터 구성
       const loginData: Session = {
@@ -120,6 +147,9 @@ export const useAuth = create<AuthState>((set) => ({
         status: "authenticated",
         error: null,
       });
+
+      // 언어 스토어도 업데이트하여 언어 선택 탭에 반영
+      useLanguage.getState().setLanguage(userLanguage);
 
       // 성공 토스트 표시
       toast.success("로그인에 성공했습니다!");

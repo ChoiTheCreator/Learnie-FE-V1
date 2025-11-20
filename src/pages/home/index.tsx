@@ -1,24 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../store/useLanguageStore";
+import { useAuth } from "../../store/useAuthStore";
 import Sidebar from "./components/Sidebar";
 import UploadModal from "./components/UploadModal";
 import UploadSkeleton from "./components/UploadSkeleton";
 import UserMenu from "./components/UserMenu";
 
 const LANGUAGE_OPTIONS = [
-  { code: "ko" as const, label: "한국어" },
-  { code: "en" as const, label: "English" },
-  { code: "zh" as const, label: "中文" },
-  { code: "ja" as const, label: "日本語" },
-  { code: "vi" as const, label: "Tiếng Việt" },
-  { code: "mn" as const, label: "Монгол" },
+  { code: "KR" as const, label: "한국어" },
+  { code: "CN" as const, label: "中文" },
+  { code: "EN" as const, label: "English" },
+  { code: "JP" as const, label: "日本語" },
+  { code: "VI" as const, label: "Tiếng Việt" },
 ] as const;
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
+  const { session } = useAuth();
   const t = translations[language].home;
+
+  // 로그인된 경우 세션의 언어를 우선 사용
+  useEffect(() => {
+    if (session?.language) {
+      setLanguage(session.language);
+    }
+  }, [session, setLanguage]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -158,14 +166,14 @@ const HomePage = () => {
                     : "text-gray-600"
                 }`}
               >
-                파일을 첨부해 주세요!
+                {t.uploadArea.title}
               </p>
               <p
                 className={`font-Pretendard text-sm transition-colors duration-300 ${
                   isHovering || isDragging ? "text-primary/70" : "text-gray-400"
                 }`}
               >
-                파일을 드래그하거나 클릭하여 업로드하세요
+                {t.uploadArea.description}
               </p>
             </label>
             <input

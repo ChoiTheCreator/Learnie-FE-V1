@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/useAuthStore";
+import { useLanguage, translations } from "../../../store/useLanguageStore";
 import toast from "react-hot-toast";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 const UserMenu = () => {
   const { session, logout } = useAuth();
+  const { language } = useLanguage();
+  const t = translations[language].userMenu;
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 외부 클릭 시 메뉴 닫기
@@ -26,16 +31,18 @@ const UserMenu = () => {
     };
   }, [isOpen]);
 
-  const handleDeleteAccount = async () => {
-    if (!confirm("정말 회원을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-      return;
-    }
+  const handleDeleteAccountClick = () => {
+    setIsOpen(false);
+    setIsDeleteModalOpen(true);
+  };
 
+  const handleDeleteAccount = async () => {
     try {
       // TODO: 회원 삭제 API 호출
       // await deleteUserAPI();
       
       toast.success("회원이 삭제되었습니다.");
+      setIsDeleteModalOpen(false);
       await logout();
       navigate("/login", { replace: true });
     } catch (error) {
@@ -125,11 +132,11 @@ const UserMenu = () => {
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
               />
             </svg>
-            회원 수정
+            {t.editProfile}
           </button>
           
           <button
-            onClick={handleDeleteAccount}
+            onClick={handleDeleteAccountClick}
             className="w-full text-left px-4 py-2 text-sm font-Pretendard text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
           >
             <svg
@@ -145,10 +152,17 @@ const UserMenu = () => {
                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
               />
             </svg>
-            회원 삭제
+            {t.deleteAccount}
           </button>
         </div>
       )}
+
+      {/* 회원 삭제 모달 */}
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteAccount}
+      />
     </div>
   );
 };

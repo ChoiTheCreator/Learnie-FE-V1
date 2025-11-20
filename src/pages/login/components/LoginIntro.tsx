@@ -5,12 +5,11 @@ import { useLanguage, translations } from "../../../store/useLanguageStore";
 const DELAY_BETWEEN_MESSAGES = 600;
 
 const LANGUAGE_OPTIONS = [
-  { code: "ko" as const, label: "한국어" },
-  { code: "en" as const, label: "English" },
-  { code: "zh" as const, label: "中文" },
-  { code: "ja" as const, label: "日本語" },
-  { code: "vi" as const, label: "Tiếng Việt" },
-  { code: "mn" as const, label: "Монгол" },
+  { code: "KR" as const, label: "한국어" },
+  { code: "CN" as const, label: "中文" },
+  { code: "EN" as const, label: "English" },
+  { code: "JP" as const, label: "日本語" },
+  { code: "VI" as const, label: "Tiếng Việt" },
 ] as const;
 
 const LoginIntro = () => {
