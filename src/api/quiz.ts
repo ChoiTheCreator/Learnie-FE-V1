@@ -24,6 +24,7 @@ export interface QuizListItem {
   quizNum: number;
   level: string;
   quizType: QuizType;
+  sequence: number;
 }
 
 // 퀴즈 리스트 조회 API
@@ -51,6 +52,7 @@ export const getQuizListAPI = async (
         quizNum: quiz.quizNum,
         level: quiz.level,
         quizType: quiz.quizType,
+        sequence: quiz.sequence,
       });
     });
   }

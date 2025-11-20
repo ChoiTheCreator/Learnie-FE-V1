@@ -562,7 +562,7 @@ const ContentDetail = () => {
                                     }
                                   >
                                     <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
-                                      {quiz.quizNum || index + 1}
+                                      {quiz.sequence ?? index + 1}
                                     </td>
                                     <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
                                       {quiz.quizNum || "-"}
