@@ -45,9 +45,11 @@ const LoginIntro = () => {
     <div className="text-gray-900 w-full bg-white relative overflow-hidden">
       {/* 헤더 - Orbit 및 언어 선택 */}
       <div className="absolute top-0 left-0 right-0 z-20 py-6 md:py-8 px-4 md:px-8 lg:px-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 bg-white/80 backdrop-blur-sm">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-Pretendard font-semibold text-gray-900">
-          {title}
-        </h1>
+        <img
+          src="/logoImage.png"
+          alt="Orbit AI"
+          className="h-8 md:h-10 lg:h-12 w-auto"
+        />
 
         {/* 언어 선택 버튼 */}
         <div className="flex flex-wrap gap-2">
@@ -76,7 +78,7 @@ const LoginIntro = () => {
               return (
                 <p
                   key={index}
-                  className={`font-Pretendard font-normal text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-700 transition-all duration-700 ${
+                  className={`font-Pretendard font-bold text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-700 transition-all duration-700 ${
                     isVisible
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-4"
