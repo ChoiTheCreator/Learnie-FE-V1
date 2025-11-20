@@ -3,6 +3,7 @@ import { useLanguage } from "../../store/useLanguageStore";
 import { getTipsAPI, type TipResponse } from "../../api/tips";
 import Sidebar from "../home/components/Sidebar";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
 
 // 카테고리별로 그룹화된 Tip 데이터 타입
 interface GroupedTip {
@@ -127,8 +128,40 @@ const TipsPage = () => {
           }
         }
       } catch (error) {
-        console.error("Tips 조회 실패:", error);
-        toast.error("Tips를 불러오는데 실패했습니다.");
+        const axiosError = error as AxiosError;
+        console.error("Tips 조회 실패:", axiosError);
+
+        // 상세한 에러 정보 로깅
+        const errorData = axiosError?.response?.data as
+          | { message?: string }
+          | undefined;
+        const errorMessage =
+          errorData?.message || axiosError?.message || "알 수 없는 오류";
+        const errorStatus = axiosError?.response?.status;
+        const errorUrl = axiosError?.config?.url || axiosError?.config?.baseURL;
+
+        console.error("Tips API 에러 상세:", {
+          message: errorMessage,
+          status: errorStatus,
+          url: errorUrl,
+          fullError: axiosError,
+        });
+
+        // 사용자에게 더 구체적인 에러 메시지 표시
+        if (errorStatus === 404) {
+          toast.error("Tips를 찾을 수 없습니다.");
+        } else if (errorStatus === 500) {
+          toast.error("서버 오류가 발생했습니다.");
+        } else if (
+          axiosError?.code === "NETWORK_ERROR" ||
+          axiosError?.message?.includes("Network")
+        ) {
+          toast.error("네트워크 연결을 확인해주세요.");
+        } else {
+          toast.error(
+            `Tips를 불러오는데 실패했습니다. (${errorStatus || "오류"})`
+          );
+        }
       } finally {
         setIsLoading(false);
       }

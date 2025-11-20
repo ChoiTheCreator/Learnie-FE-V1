@@ -15,10 +15,13 @@ const getDefaultApiUrl = () => {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getDefaultApiUrl();
 
 // 디버깅용 (프로덕션에서도 확인 가능)
-if (import.meta.env.PROD) {
-  console.log("API_BASE_URL:", API_BASE_URL);
-  console.log("VITE_API_BASE_URL env:", import.meta.env.VITE_API_BASE_URL);
-}
+console.log("[Axios Instance] 초기화:", {
+  API_BASE_URL,
+  VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+  MODE: import.meta.env.MODE,
+  DEV: import.meta.env.DEV,
+  PROD: import.meta.env.PROD,
+});
 
 // Axios 인스턴스 생성
 export const axiosInstance = axios.create({

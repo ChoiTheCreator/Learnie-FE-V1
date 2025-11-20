@@ -66,12 +66,10 @@ function App() {
         path="/notes/:folderId/create-practice"
         element={<CreatePracticePage />}
       />
-      <Route path="/notes/:folderId/result/summary" element={<SummaryPage />} />
+      <Route path="/notes/:folderId/result/summary" element={<SummaryPage />} /> */}
 
-
-
-      {/* 혹시 없던 주소 들어왔을 때 기본적으로 home으로 보냄 */}
-        {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
+        {/* 혹시 없던 주소 들어왔을 때 기본적으로 login으로 보냄 */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   );
