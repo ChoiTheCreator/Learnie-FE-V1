@@ -125,7 +125,7 @@ const QuizDetail = () => {
         {/* 메인 콘텐츠 영역 */}
         <main className="flex-1 p-8 overflow-auto bg-white">
           <div className="flex gap-8 h-full">
-            {/* 왼쪽: 스크립트 전문 */}
+            {/* 왼쪽: Translation */}
             <div className="flex-1 border-r border-gray-200 pr-8">
               <div className="flex items-center gap-4 mb-6">
                 <button
@@ -147,7 +147,7 @@ const QuizDetail = () => {
                   </svg>
                 </button>
                 <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
-                  스크립트 전문
+                  Translation
                 </h2>
               </div>
 

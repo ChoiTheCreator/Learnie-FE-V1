@@ -171,7 +171,7 @@ const HomePage = () => {
       {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
         {/* 헤더 */}
-        <header className="bg-white px-8 py-4 flex items-center justify-between border-b border-gray-200">
+        <header className="bg-white px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-Pretendard font-semibold text-gray-900">
               {t.sidebar.home}

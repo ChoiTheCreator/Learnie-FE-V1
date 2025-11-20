@@ -163,7 +163,7 @@ const ContentDetail = () => {
       {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
         {/* 헤더 */}
-        <header className="bg-white px-8 py-4 flex items-center justify-between border-b border-gray-200">
+        <header className="bg-white px-8 py-4 flex items-center justify-between">
           {/* 뒤로가기 버튼 */}
           <button
             onClick={() => navigate("/home")}

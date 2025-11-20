@@ -228,7 +228,7 @@ const TipsPage = () => {
         {/* 왼쪽: 목차 (나무위키 스타일) */}
         <div className="w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto">
           <div className="p-4">
-            <h2 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4">
+            <h2 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4 mt-4">
               Index
             </h2>
             <nav className="space-y-2">
