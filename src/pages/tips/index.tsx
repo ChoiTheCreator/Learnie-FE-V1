@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLanguage, translations } from "../../store/useLanguageStore";
+import { useLanguage } from "../../store/useLanguageStore";
 import Sidebar from "../home/components/Sidebar";
 
 // 더미 데이터
@@ -464,14 +463,17 @@ const tipsData = {
 };
 
 const TipsPage = () => {
-  const navigate = useNavigate();
   const { language } = useLanguage();
-  const t = translations[language].home.sidebar;
 
   const data = tipsData[language as keyof typeof tipsData] || tipsData.ko;
-  const [selectedCategory, setSelectedCategory] = useState(data.categories[0].id);
+  const [selectedCategory, setSelectedCategory] = useState(
+    data.categories[0].id
+  );
   const [selectedItem, setSelectedItem] = useState(
     data.categories[0].items[0].id
+  );
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set([data.categories[0].id])
   );
 
   const currentCategory = data.categories.find(
@@ -480,6 +482,22 @@ const TipsPage = () => {
   const currentItem = currentCategory?.items.find(
     (item) => item.id === selectedItem
   );
+
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
+      }
+      return newSet;
+    });
+  };
+
+  const isCategoryExpanded = (categoryId: string) => {
+    return expandedCategories.has(categoryId);
+  };
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
@@ -491,44 +509,78 @@ const TipsPage = () => {
         <div className="w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto">
           <div className="p-4">
             <h2 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4">
-              목차
+              Index
             </h2>
             <nav className="space-y-2">
-              {data.categories.map((category) => (
-                <div key={category.id} className="mb-4">
-                  <button
-                    onClick={() => {
-                      setSelectedCategory(category.id);
-                      setSelectedItem(category.items[0].id);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm font-Pretendard transition-colors ${
-                      selectedCategory === category.id
-                        ? "bg-primary/10 text-primary font-semibold"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    {category.title}
-                  </button>
-                  {selectedCategory === category.id && (
-                    <ul className="mt-2 ml-4 space-y-1">
-                      {category.items.map((item) => (
-                        <li key={item.id}>
-                          <button
-                            onClick={() => setSelectedItem(item.id)}
-                            className={`w-full text-left px-3 py-2 rounded-md text-xs font-Pretendard transition-colors ${
-                              selectedItem === item.id
-                                ? "bg-primary/5 text-primary font-medium"
-                                : "text-gray-600 hover:bg-gray-50"
-                            }`}
-                          >
-                            {item.title}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
+              {data.categories.map((category) => {
+                const isExpanded = isCategoryExpanded(category.id);
+                const isSelected = selectedCategory === category.id;
+
+                return (
+                  <div key={category.id} className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleCategory(category.id)}
+                        className="shrink-0 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
+                        aria-label={isExpanded ? "접기" : "펼치기"}
+                      >
+                        <svg
+                          className={`w-4 h-4 transition-transform ${
+                            isExpanded ? "rotate-90" : ""
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedCategory(category.id);
+                          setSelectedItem(category.items[0].id);
+                          // 카테고리 선택 시 자동으로 펼치기
+                          if (!isExpanded) {
+                            setExpandedCategories((prev) =>
+                              new Set(prev).add(category.id)
+                            );
+                          }
+                        }}
+                        className={`flex-1 text-left px-3 py-2 rounded-md text-sm font-Pretendard transition-colors ${
+                          isSelected
+                            ? "bg-primary/10 text-primary font-semibold"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        {category.title}
+                      </button>
+                    </div>
+                    {isExpanded && (
+                      <ul className="mt-2 ml-8 space-y-1">
+                        {category.items.map((item) => (
+                          <li key={item.id}>
+                            <button
+                              onClick={() => setSelectedItem(item.id)}
+                              className={`w-full text-left px-3 py-2 rounded-md text-xs font-Pretendard transition-colors ${
+                                selectedItem === item.id
+                                  ? "bg-primary/5 text-primary font-medium"
+                                  : "text-gray-600 hover:bg-gray-50"
+                              }`}
+                            >
+                              {item.title}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
             </nav>
           </div>
         </div>
@@ -590,4 +642,3 @@ const TipsPage = () => {
 };
 
 export default TipsPage;
-
