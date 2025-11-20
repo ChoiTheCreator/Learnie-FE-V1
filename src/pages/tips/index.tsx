@@ -1,503 +1,190 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "../../store/useLanguageStore";
+import { getTipsAPI, type TipResponse } from "../../api/tips";
 import Sidebar from "../home/components/Sidebar";
+import toast from "react-hot-toast";
 
-// 더미 데이터
-const tipsData = {
-  ko: {
-    categories: [
-      {
-        id: "study",
-        title: "공부 꿀팁",
-        items: [
-          {
-            id: "note-taking",
-            title: "효과적인 필기법",
-            content: `## 효과적인 필기법
-
-### 1. 코넬 노트 시스템
-- 페이지를 세 부분으로 나누기
-- 오른쪽: 강의 내용 필기
-- 왼쪽: 핵심 키워드와 질문
-- 하단: 요약
-
-### 2. 마인드맵 활용
-- 중심 주제에서 시작
-- 가지를 뻗어가며 연결
-- 시각적 기억에 도움
-
-### 3. 색상 코딩
-- 중요도에 따라 색상 구분
-- 빨강: 매우 중요
-- 파랑: 개념 설명
-- 초록: 예시
-`,
-          },
-          {
-            id: "time-management",
-            title: "시간 관리 전략",
-            content: `## 시간 관리 전략
-
-### 포모도로 기법
-- 25분 집중 + 5분 휴식
-- 4회 반복 후 긴 휴식
-- 집중력 향상에 효과적
-
-### 우선순위 매트릭스
-- 긴급하고 중요한 것부터
-- 계획적으로 일정 관리
-- 데드라인 명확히 설정
-`,
-          },
-        ],
-      },
-      {
-        id: "campus",
-        title: "캠퍼스 생활",
-        items: [
-          {
-            id: "library",
-            title: "도서관 이용 꿀팁",
-            content: `## 도서관 이용 꿀팁
-
-### 조용한 공간 찾기
-- 개인 열람실 예약
-- 조용한 구역 확인
-- 이어폰 필수
-
-### 자료 검색
-- 온라인 카탈로그 활용
-- 교수님 추천 도서 확인
-- 전자책도 활용하기
-`,
-          },
-          {
-            id: "cafeteria",
-            title: "학식 이용 팁",
-            content: `## 학식 이용 팁
-
-### 시간대별 추천
-- 점심: 11:30-12:30 (혼잡)
-- 저녁: 17:30 이후 (한산)
-- 주말: 운영 시간 확인 필수
-
-### 가성비 메뉴
-- 일품요리보다 정식
-- 학생 할인 확인
-- 쿠폰 적극 활용
-`,
-          },
-        ],
-      },
-      {
-        id: "exam",
-        title: "시험 준비",
-        items: [
-          {
-            id: "exam-prep",
-            title: "시험 준비 전략",
-            content: `## 시험 준비 전략
-
-### 2주 전
-- 전체 범위 훑어보기
-- 약한 부분 파악
-- 계획 세우기
-
-### 1주 전
-- 핵심 내용 정리
-- 기출문제 풀기
-- 암기 내용 반복
-
-### 시험 전날
-- 무리한 공부 금지
-- 충분한 휴식
-- 준비물 미리 챙기기
-`,
-          },
-        ],
-      },
-    ],
-  },
-  en: {
-    categories: [
-      {
-        id: "study",
-        title: "Study Tips",
-        items: [
-          {
-            id: "note-taking",
-            title: "Effective Note-Taking",
-            content: `## Effective Note-Taking
-
-### 1. Cornell Note System
-- Divide page into three sections
-- Right: Lecture notes
-- Left: Key keywords and questions
-- Bottom: Summary
-
-### 2. Mind Mapping
-- Start from central topic
-- Branch out and connect
-- Helps visual memory
-
-### 3. Color Coding
-- Color code by importance
-- Red: Very important
-- Blue: Concept explanations
-- Green: Examples
-`,
-          },
-          {
-            id: "time-management",
-            title: "Time Management Strategies",
-            content: `## Time Management Strategies
-
-### Pomodoro Technique
-- 25 minutes focus + 5 minutes break
-- Long break after 4 cycles
-- Effective for concentration
-
-### Priority Matrix
-- Start with urgent and important
-- Manage schedule systematically
-- Set clear deadlines
-`,
-          },
-        ],
-      },
-      {
-        id: "campus",
-        title: "Campus Life",
-        items: [
-          {
-            id: "library",
-            title: "Library Tips",
-            content: `## Library Tips
-
-### Finding Quiet Spaces
-- Reserve private study rooms
-- Check quiet zones
-- Bring headphones
-
-### Resource Search
-- Use online catalog
-- Check professor's recommended books
-- Utilize e-books
-`,
-          },
-          {
-            id: "cafeteria",
-            title: "Cafeteria Tips",
-            content: `## Cafeteria Tips
-
-### Recommended Times
-- Lunch: 11:30-12:30 (crowded)
-- Dinner: After 17:30 (quiet)
-- Weekend: Check operating hours
-
-### Value Meals
-- Regular meals over special dishes
-- Check student discounts
-- Use coupons actively
-`,
-          },
-        ],
-      },
-      {
-        id: "exam",
-        title: "Exam Preparation",
-        items: [
-          {
-            id: "exam-prep",
-            title: "Exam Preparation Strategy",
-            content: `## Exam Preparation Strategy
-
-### 2 Weeks Before
-- Review entire scope
-- Identify weak areas
-- Make a plan
-
-### 1 Week Before
-- Organize key content
-- Solve past exam papers
-- Repeat memorization
-
-### Day Before Exam
-- Avoid excessive studying
-- Get enough rest
-- Prepare materials in advance
-`,
-          },
-        ],
-      },
-    ],
-  },
-  zh: {
-    categories: [
-      {
-        id: "study",
-        title: "学习技巧",
-        items: [
-          {
-            id: "note-taking",
-            title: "有效的笔记方法",
-            content: `## 有效的笔记方法
-
-### 1. 康奈尔笔记系统
-- 将页面分为三部分
-- 右侧：课堂笔记
-- 左侧：关键词和问题
-- 底部：摘要
-
-### 2. 思维导图
-- 从中心主题开始
-- 分支展开并连接
-- 有助于视觉记忆
-
-### 3. 颜色编码
-- 按重要性分类颜色
-- 红色：非常重要
-- 蓝色：概念说明
-- 绿色：示例
-`,
-          },
-          {
-            id: "time-management",
-            title: "时间管理策略",
-            content: `## 时间管理策略
-
-### 番茄工作法
-- 25分钟专注 + 5分钟休息
-- 4次循环后长休息
-- 有效提高专注力
-
-### 优先级矩阵
-- 从紧急重要的事情开始
-- 系统化管理日程
-- 设定明确的截止日期
-`,
-          },
-        ],
-      },
-      {
-        id: "campus",
-        title: "校园生活",
-        items: [
-          {
-            id: "library",
-            title: "图书馆使用技巧",
-            content: `## 图书馆使用技巧
-
-### 寻找安静空间
-- 预约个人阅览室
-- 确认安静区域
-- 必备耳机
-
-### 资料搜索
-- 使用在线目录
-- 查看教授推荐书籍
-- 利用电子书
-`,
-          },
-          {
-            id: "cafeteria",
-            title: "食堂使用技巧",
-            content: `## 食堂使用技巧
-
-### 时间段推荐
-- 午餐：11:30-12:30（拥挤）
-- 晚餐：17:30后（清静）
-- 周末：确认营业时间
-
-### 性价比菜单
-- 正餐优于特餐
-- 确认学生折扣
-- 积极使用优惠券
-`,
-          },
-        ],
-      },
-      {
-        id: "exam",
-        title: "考试准备",
-        items: [
-          {
-            id: "exam-prep",
-            title: "考试准备策略",
-            content: `## 考试准备策略
-
-### 2周前
-- 浏览整个范围
-- 找出薄弱环节
-- 制定计划
-
-### 1周前
-- 整理核心内容
-- 做历年真题
-- 重复记忆内容
-
-### 考试前一天
-- 避免过度学习
-- 充分休息
-- 提前准备物品
-`,
-          },
-        ],
-      },
-    ],
-  },
-  ja: {
-    categories: [
-      {
-        id: "study",
-        title: "勉強のコツ",
-        items: [
-          {
-            id: "note-taking",
-            title: "効果的なノートの取り方",
-            content: `## 効果的なノートの取り方
-
-### 1. コーネルノートシステム
-- ページを3つの部分に分ける
-- 右側：講義内容
-- 左側：キーワードと質問
-- 下部：要約
-
-### 2. マインドマップ
-- 中心テーマから始める
-- 枝を広げて接続
-- 視覚的記憶に役立つ
-
-### 3. カラーコーディング
-- 重要度で色分け
-- 赤：非常に重要
-- 青：概念説明
-- 緑：例
-`,
-          },
-          {
-            id: "time-management",
-            title: "時間管理戦略",
-            content: `## 時間管理戦略
-
-### ポモドーロテクニック
-- 25分集中 + 5分休憩
-- 4回繰り返した後長い休憩
-- 集中力向上に効果的
-
-### 優先順位マトリックス
-- 緊急で重要なことから
-- 計画的にスケジュール管理
-- 明確な締切を設定
-`,
-          },
-        ],
-      },
-      {
-        id: "campus",
-        title: "キャンパス生活",
-        items: [
-          {
-            id: "library",
-            title: "図書館利用のコツ",
-            content: `## 図書館利用のコツ
-
-### 静かな空間を見つける
-- 個人閲覧室を予約
-- 静かなエリアを確認
-- イヤホン必須
-
-### 資料検索
-- オンラインカタログを活用
-- 教授の推薦図書を確認
-- 電子書籍も活用
-`,
-          },
-          {
-            id: "cafeteria",
-            title: "学食利用のコツ",
-            content: `## 学食利用のコツ
-
-### 時間帯別推奨
-- 昼食：11:30-12:30（混雑）
-- 夕食：17:30以降（空いている）
-- 週末：営業時間を確認
-
-### コスパメニュー
-- 一品料理より定食
-- 学生割引を確認
-- クーポンを積極的に活用
-`,
-          },
-        ],
-      },
-      {
-        id: "exam",
-        title: "試験準備",
-        items: [
-          {
-            id: "exam-prep",
-            title: "試験準備戦略",
-            content: `## 試験準備戦略
-
-### 2週間前
-- 全体範囲を確認
-- 弱い部分を把握
-- 計画を立てる
-
-### 1週間前
-- 核心内容を整理
-- 過去問を解く
-- 暗記内容を繰り返す
-
-### 試験前日
-- 無理な勉強は禁止
-- 十分な休息
-- 準備物を事前に用意
-`,
-          },
-        ],
-      },
-    ],
-  },
-};
+// 카테고리별로 그룹화된 Tip 데이터 타입
+interface GroupedTip {
+  category: string;
+  indexes: Array<{
+    idx: string;
+    contents: string[];
+  }>;
+}
 
 const TipsPage = () => {
   const { language } = useLanguage();
-
-  const data = tipsData[language as keyof typeof tipsData] || tipsData.ko;
-  const [selectedCategory, setSelectedCategory] = useState(
-    data.categories[0].id
-  );
-  const [selectedItem, setSelectedItem] = useState(
-    data.categories[0].items[0].id
-  );
+  const [tips, setTips] = useState<GroupedTip[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedIdx, setSelectedIdx] = useState<string>("");
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set([data.categories[0].id])
+    new Set()
+  );
+  const [expandedIndexes, setExpandedIndexes] = useState<Set<string>>(
+    new Set()
   );
 
-  const currentCategory = data.categories.find(
-    (cat) => cat.id === selectedCategory
-  );
-  const currentItem = currentCategory?.items.find(
-    (item) => item.id === selectedItem
+  // API에서 데이터 가져오기
+  useEffect(() => {
+    const fetchTips = async () => {
+      setIsLoading(true);
+      try {
+        // 언어 코드를 그대로 전달 (KR, EN, CN, JP, VI 형식)
+        const response = await getTipsAPI(language);
+
+        // API 응답 확인을 위한 콘솔 출력
+        console.log("Tips API 응답:", response);
+        console.log("응답 타입:", typeof response);
+        console.log("배열 여부:", Array.isArray(response));
+        console.log("응답 구조:", JSON.stringify(response, null, 2));
+
+        // 응답 구조: 카테고리별로 이미 그룹화된 객체 형태
+        // { "맛집": [...], "학교 생활 팁": [...], "유학생활 팁": [...] }
+        let groupedArray: GroupedTip[] = [];
+
+        if (
+          response &&
+          typeof response === "object" &&
+          !Array.isArray(response)
+        ) {
+          // 객체의 각 키가 카테고리명이고 값이 배열인 구조
+          const responseObj = response as Record<string, TipResponse[]>;
+
+          groupedArray = Object.keys(responseObj)
+            .sort()
+            .map((category) => {
+              // 각 카테고리 내에서 idx별로 그룹화
+              const idxGroups: Record<string, string[]> = {};
+
+              responseObj[category].forEach((tip) => {
+                if (!idxGroups[tip.idx]) {
+                  idxGroups[tip.idx] = [];
+                }
+                idxGroups[tip.idx].push(tip.content);
+              });
+
+              // idx별로 정렬하고 contents 배열로 변환
+              const indexes = Object.keys(idxGroups)
+                .sort()
+                .map((idx) => ({
+                  idx,
+                  contents: idxGroups[idx],
+                }));
+
+              return {
+                category,
+                indexes,
+              };
+            });
+        } else if (Array.isArray(response)) {
+          // 배열 형태인 경우 (하위 호환성)
+          const categoryGroups: Record<string, Record<string, string[]>> = {};
+
+          response.forEach((tip) => {
+            if (!categoryGroups[tip.category]) {
+              categoryGroups[tip.category] = {};
+            }
+            if (!categoryGroups[tip.category][tip.idx]) {
+              categoryGroups[tip.category][tip.idx] = [];
+            }
+            categoryGroups[tip.category][tip.idx].push(tip.content);
+          });
+
+          groupedArray = Object.keys(categoryGroups)
+            .sort()
+            .map((category) => {
+              const indexes = Object.keys(categoryGroups[category])
+                .sort()
+                .map((idx) => ({
+                  idx,
+                  contents: categoryGroups[category][idx],
+                }));
+
+              return {
+                category,
+                indexes,
+              };
+            });
+        } else {
+          console.error("Tips 응답이 올바르지 않습니다:", response);
+          toast.error("Tips 데이터 형식이 올바르지 않습니다.");
+          return;
+        }
+
+        setTips(groupedArray);
+
+        // 첫 번째 카테고리와 첫 번째 인덱스 선택
+        if (groupedArray.length > 0) {
+          const firstCategory = groupedArray[0].category;
+          const firstIdx = groupedArray[0].indexes[0]?.idx || "";
+          setSelectedCategory(firstCategory);
+          setSelectedIdx(firstIdx);
+          setExpandedCategories(new Set([firstCategory]));
+          if (firstIdx) {
+            setExpandedIndexes(new Set([`${firstCategory}-${firstIdx}`]));
+          }
+        }
+      } catch (error) {
+        console.error("Tips 조회 실패:", error);
+        toast.error("Tips를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTips();
+  }, [language]);
+
+  const currentCategory = tips.find((cat) => cat.category === selectedCategory);
+  const currentIndex = currentCategory?.indexes.find(
+    (index) => index.idx === selectedIdx
   );
 
-  const toggleCategory = (categoryId: string) => {
+  const toggleCategory = (category: string) => {
     setExpandedCategories((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
+      if (newSet.has(category)) {
+        newSet.delete(category);
       } else {
-        newSet.add(categoryId);
+        newSet.add(category);
       }
       return newSet;
     });
   };
 
-  const isCategoryExpanded = (categoryId: string) => {
-    return expandedCategories.has(categoryId);
+  const toggleIndex = (category: string, idx: string) => {
+    const indexKey = `${category}-${idx}`;
+    setExpandedIndexes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(indexKey)) {
+        newSet.delete(indexKey);
+      } else {
+        newSet.add(indexKey);
+      }
+      return newSet;
+    });
   };
+
+  const isCategoryExpanded = (category: string) => {
+    return expandedCategories.has(category);
+  };
+
+  const isIndexExpanded = (category: string, idx: string) => {
+    return expandedIndexes.has(`${category}-${idx}`);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen bg-white overflow-hidden">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-gray-500 font-Pretendard">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
@@ -512,15 +199,15 @@ const TipsPage = () => {
               Index
             </h2>
             <nav className="space-y-2">
-              {data.categories.map((category) => {
-                const isExpanded = isCategoryExpanded(category.id);
-                const isSelected = selectedCategory === category.id;
+              {tips.map((categoryData) => {
+                const isExpanded = isCategoryExpanded(categoryData.category);
+                const isSelected = selectedCategory === categoryData.category;
 
                 return (
-                  <div key={category.id} className="mb-4">
+                  <div key={categoryData.category} className="mb-4">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => toggleCategory(category.id)}
+                        onClick={() => toggleCategory(categoryData.category)}
                         className="shrink-0 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-700 transition-colors"
                         aria-label={isExpanded ? "접기" : "펼치기"}
                       >
@@ -542,12 +229,13 @@ const TipsPage = () => {
                       </button>
                       <button
                         onClick={() => {
-                          setSelectedCategory(category.id);
-                          setSelectedItem(category.items[0].id);
+                          setSelectedCategory(categoryData.category);
+                          const firstIdx = categoryData.indexes[0]?.idx || "";
+                          setSelectedIdx(firstIdx);
                           // 카테고리 선택 시 자동으로 펼치기
                           if (!isExpanded) {
                             setExpandedCategories((prev) =>
-                              new Set(prev).add(category.id)
+                              new Set(prev).add(categoryData.category)
                             );
                           }
                         }}
@@ -557,25 +245,87 @@ const TipsPage = () => {
                             : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
-                        {category.title}
+                        {categoryData.category}
                       </button>
                     </div>
                     {isExpanded && (
                       <ul className="mt-2 ml-8 space-y-1">
-                        {category.items.map((item) => (
-                          <li key={item.id}>
-                            <button
-                              onClick={() => setSelectedItem(item.id)}
-                              className={`w-full text-left px-3 py-2 rounded-md text-xs font-Pretendard transition-colors ${
-                                selectedItem === item.id
-                                  ? "bg-primary/5 text-primary font-medium"
-                                  : "text-gray-600 hover:bg-gray-50"
-                              }`}
-                            >
-                              {item.title}
-                            </button>
-                          </li>
-                        ))}
+                        {categoryData.indexes.map((indexData) => {
+                          const isIdxExpanded = isIndexExpanded(
+                            categoryData.category,
+                            indexData.idx
+                          );
+                          const isIdxSelected = selectedIdx === indexData.idx;
+
+                          return (
+                            <li key={indexData.idx}>
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={() =>
+                                    toggleIndex(
+                                      categoryData.category,
+                                      indexData.idx
+                                    )
+                                  }
+                                  className="shrink-0 w-4 h-4 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+                                  aria-label={isIdxExpanded ? "접기" : "펼치기"}
+                                >
+                                  <svg
+                                    className={`w-3 h-3 transition-transform ${
+                                      isIdxExpanded ? "rotate-90" : ""
+                                    }`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 5l7 7-7 7"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setSelectedIdx(indexData.idx);
+                                    if (!isIdxExpanded) {
+                                      toggleIndex(
+                                        categoryData.category,
+                                        indexData.idx
+                                      );
+                                    }
+                                  }}
+                                  className={`flex-1 text-left px-2 py-1.5 rounded-md text-xs font-Pretendard transition-colors ${
+                                    isIdxSelected
+                                      ? "bg-primary/5 text-primary font-medium"
+                                      : "text-gray-600 hover:bg-gray-50"
+                                  }`}
+                                >
+                                  {indexData.idx}
+                                </button>
+                              </div>
+                              {isIdxExpanded && (
+                                <ul className="mt-1 ml-6 space-y-0.5">
+                                  {indexData.contents.map(
+                                    (content, contentIdx) => (
+                                      <li key={contentIdx}>
+                                        <button
+                                          onClick={() =>
+                                            setSelectedIdx(indexData.idx)
+                                          }
+                                          className="w-full text-left px-2 py-1 rounded text-xs text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors line-clamp-2"
+                                        >
+                                          {content}
+                                        </button>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     )}
                   </div>
@@ -588,49 +338,56 @@ const TipsPage = () => {
         {/* 오른쪽: 내용 */}
         <div className="flex-1 overflow-y-auto bg-white">
           <div className="max-w-4xl mx-auto p-8">
-            {currentItem && (
+            {currentIndex && (
               <article className="prose prose-sm max-w-none font-Pretendard">
                 <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                  {currentItem.title}
+                  {currentIndex.idx}
                 </h1>
-                <div className="text-gray-700 leading-relaxed">
-                  {currentItem.content.split("\n").map((line, index) => {
-                    if (line.startsWith("## ")) {
-                      return (
-                        <h2
-                          key={index}
-                          className="text-2xl font-semibold mt-8 mb-4 text-gray-900 border-b border-gray-200 pb-2"
-                        >
-                          {line.substring(3)}
-                        </h2>
-                      );
-                    }
-                    if (line.startsWith("### ")) {
-                      return (
-                        <h3
-                          key={index}
-                          className="text-xl font-semibold mt-6 mb-3 text-gray-800"
-                        >
-                          {line.substring(4)}
-                        </h3>
-                      );
-                    }
-                    if (line.startsWith("- ")) {
-                      return (
-                        <li key={index} className="ml-6 mb-2 list-disc">
-                          {line.substring(2)}
-                        </li>
-                      );
-                    }
-                    if (line.trim() === "") {
-                      return <br key={index} />;
-                    }
-                    return (
-                      <p key={index} className="mb-3">
-                        {line}
-                      </p>
-                    );
-                  })}
+                <div className="space-y-4">
+                  {currentIndex.contents.map((content, index) => (
+                    <div
+                      key={index}
+                      className="text-gray-700 leading-relaxed whitespace-pre-wrap p-4 bg-gray-50 rounded-lg border border-gray-200"
+                    >
+                      {content.split("\n").map((line, lineIndex) => {
+                        if (line.startsWith("## ")) {
+                          return (
+                            <h2
+                              key={lineIndex}
+                              className="text-2xl font-semibold mt-6 mb-4 text-gray-900 border-b border-gray-200 pb-2"
+                            >
+                              {line.substring(3)}
+                            </h2>
+                          );
+                        }
+                        if (line.startsWith("### ")) {
+                          return (
+                            <h3
+                              key={lineIndex}
+                              className="text-xl font-semibold mt-4 mb-3 text-gray-800"
+                            >
+                              {line.substring(4)}
+                            </h3>
+                          );
+                        }
+                        if (line.startsWith("- ")) {
+                          return (
+                            <li key={lineIndex} className="ml-6 mb-2 list-disc">
+                              {line.substring(2)}
+                            </li>
+                          );
+                        }
+                        if (line.trim() === "") {
+                          return <br key={lineIndex} />;
+                        }
+                        return (
+                          <p key={lineIndex} className="mb-2">
+                            {line}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </article>
             )}

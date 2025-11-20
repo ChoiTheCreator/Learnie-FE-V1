@@ -31,7 +31,7 @@ export const getFoldersAPI = async (
   userId: number
 ): Promise<FolderResponse[]> => {
   const response = await axiosInstance.get<FolderResponse[]>(
-    `/folders/user/${userId}`
+    `/lectures/folders/${userId}`
   );
   return response.data;
 };

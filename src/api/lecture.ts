@@ -17,6 +17,17 @@ export interface LectureUploadResponse {
   summary: string;
 }
 
+// 폴더별 강의 목록 항목
+export interface LectureListItem {
+  lectureId: number;
+  title: string;
+}
+
+// 폴더별 강의 목록 응답
+export interface LectureListResponse {
+  lectureList: LectureListItem[];
+}
+
 // 최대 파일 크기 (100MB)
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 
@@ -48,6 +59,16 @@ export const uploadLectureAPI = async (
     formData
   );
   
+  return response.data;
+};
+
+// 폴더별 강의 목록 조회 API
+export const getLectureListByFolderAPI = async (
+  folderId: number
+): Promise<LectureListResponse> => {
+  const response = await axiosInstance.get<LectureListResponse>(
+    `/lectures/list/${folderId}`
+  );
   return response.data;
 };
 

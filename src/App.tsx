@@ -1,12 +1,12 @@
 // src/App.tsx
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
-import LoginPage from './pages/login';
-import SignupPage from './pages/signup';
-import HomePage from './pages/home';
-import ContentDetail from './pages/home/components/ContentDetail';
-import QuizDetail from './pages/home/components/QuizDetail';
-import TipsPage from './pages/tips';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import LoginPage from "./pages/login";
+import SignupPage from "./pages/signup";
+import HomePage from "./pages/home";
+import ContentDetail from "./pages/home/components/ContentDetail";
+import QuizDetail from "./pages/home/components/QuizDetail";
+import TipsPage from "./pages/tips";
 // Next의 (routes)/home/page.tsx 이런 구조를 그대로 import한다고 가정
 
 function App() {
@@ -17,51 +17,51 @@ function App() {
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#fff',
-            color: '#333',
-            fontFamily: 'Pretendard, sans-serif',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            background: "#fff",
+            color: "#333",
+            fontFamily: "Pretendard, sans-serif",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
           },
           success: {
             iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
+              primary: "#10b981",
+              secondary: "#fff",
             },
           },
           error: {
             iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
+              primary: "#ef4444",
+              secondary: "#fff",
             },
           },
         }}
       />
       <Routes>
-      {/* 루트로 들어오면 /home으로 리다이렉트 */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* 루트로 들어오면 /home으로 리다이렉트 */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* /home */}
-      <Route path="/home" element={<HomePage />} />
-      
-      {/* /home/content/:id - 콘텐츠 상세 페이지 (요약/퀴즈/심화) */}
-      <Route path="/home/content/:contentId" element={<ContentDetail />} />
-      
-      {/* /home/quiz/:id */}
-      <Route path="/home/quiz/:id" element={<QuizDetail />} />
+        {/* /home */}
+        <Route path="/home" element={<HomePage />} />
 
-      {/* /tips */}
-      <Route path="/tips" element={<TipsPage />} />
+        {/* /home/content/:id - 콘텐츠 상세 페이지 (요약/퀴즈/심화) */}
+        <Route path="/home/content/:contentId" element={<ContentDetail />} />
 
-      {/* /login */}
-      <Route path="/login" element={<LoginPage />} />
+        {/* /home/quiz/:id */}
+        <Route path="/home/quiz/:id" element={<QuizDetail />} />
 
-      {/* /signup */}
-      <Route path="/signup" element={<SignupPage />} />
+        {/* /tips */}
+        <Route path="/tips" element={<TipsPage />} />
 
-      {/* notes 관련 (folderId는 동적 파라미터) */}
-      {/* <Route path="/notes/:folderId/confirm" element={<ConfirmPage />} />
+        {/* /login */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* /signup */}
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* notes 관련 (folderId는 동적 파라미터) */}
+        {/* <Route path="/notes/:folderId/confirm" element={<ConfirmPage />} />
       <Route
         path="/notes/:folderId/create-practice"
         element={<CreatePracticePage />}
@@ -71,7 +71,7 @@ function App() {
 
 
       {/* 혹시 없던 주소 들어왔을 때 기본적으로 home으로 보냄 */}
-      {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
+        {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
       </Routes>
     </>
   );

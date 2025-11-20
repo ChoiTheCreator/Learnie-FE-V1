@@ -26,26 +26,33 @@ const Sidebar = ({
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
-  // 폴더 목록 조회
-  useEffect(() => {
-    const fetchFolders = async () => {
-      if (!user?.id) return;
+  // 폴더 목록 조회 함수 (클릭 시 호출)
+  const fetchFolders = async () => {
+    if (!user?.id) return;
 
-      setIsLoadingFolders(true);
-      try {
-        const folderList = await getFoldersAPI(user.id);
-        setFolders(folderList);
-      } catch (error) {
-        console.error("폴더 목록 조회 실패:", error);
-        // 에러 발생 시 빈 배열로 설정
-        setFolders([]);
-      } finally {
-        setIsLoadingFolders(false);
-      }
-    };
+    setIsLoadingFolders(true);
+    try {
+      const folderList = await getFoldersAPI(user.id);
+      setFolders(folderList);
+    } catch (error) {
+      console.error("폴더 목록 조회 실패:", error);
+      // 에러 발생 시 빈 배열로 설정
+      setFolders([]);
+    } finally {
+      setIsLoadingFolders(false);
+    }
+  };
 
-    fetchFolders();
-  }, [user?.id, refreshTrigger]); // refreshTrigger가 변경되면 폴더 목록 재조회
+  // 강의과목 클릭 시 폴더 목록 조회
+  const handleCoursesClick = () => {
+    const newIsOpen = !isCoursesOpen;
+    setIsCoursesOpen(newIsOpen);
+    
+    // 펼칠 때만 폴더 목록 조회
+    if (newIsOpen && folders.length === 0) {
+      fetchFolders();
+    }
+  };
 
   // 우클릭 메뉴 닫기
   useEffect(() => {
@@ -96,7 +103,7 @@ const Sidebar = ({
           </li>
           <li>
             <button
-              onClick={() => setIsCoursesOpen(!isCoursesOpen)}
+              onClick={handleCoursesClick}
               onContextMenu={(e) => {
                 e.preventDefault();
                 setContextMenu({ x: e.clientX, y: e.clientY });

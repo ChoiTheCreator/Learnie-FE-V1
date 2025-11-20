@@ -42,7 +42,9 @@ const ContentDetail = () => {
   const t = translations[language].home;
 
   // location.state에서 전달된 강의 데이터 가져오기
-  const lectureData = location.state?.lectureData as LectureUploadResponse | undefined;
+  const lectureData = location.state?.lectureData as
+    | LectureUploadResponse
+    | undefined;
 
   // 로그인된 경우 사용자 정보의 언어를 우선 사용
   useEffect(() => {
@@ -116,7 +118,7 @@ const ContentDetail = () => {
                 </button>
               ))}
             </div>
-            
+
             {/* 마이페이지 메뉴 */}
             <UserMenu />
           </div>
@@ -196,8 +198,9 @@ const ContentDetail = () => {
                         <>
                           <p>{t.content.summaryContent}</p>
                           <p className="mt-4">
-                            강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심
-                            개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
+                            강의의 주요 내용을 요약한 내용이 여기에 표시됩니다.
+                            핵심 개념과 중요한 포인트를 빠르게 파악할 수
+                            있습니다.
                           </p>
                         </>
                       )}
@@ -564,4 +567,3 @@ const ContentDetail = () => {
 };
 
 export default ContentDetail;
-

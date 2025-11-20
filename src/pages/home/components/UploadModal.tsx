@@ -30,9 +30,11 @@ const UploadModal = ({
   const [classTitle, setClassTitle] = useState("");
   const [folders, setFolders] = useState<FolderResponse[]>([]);
   const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
+  const [selectedFolderName, setSelectedFolderName] = useState<string>("");
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [isFolderListOpen, setIsFolderListOpen] = useState(false);
 
   // 폴더 목록 조회
   useEffect(() => {
@@ -54,6 +56,16 @@ const UploadModal = ({
     fetchFolders();
   }, [user?.id, isOpen, refreshTrigger]);
 
+  // 모달이 닫힐 때 상태 초기화
+  useEffect(() => {
+    if (!isOpen) {
+      setClassTitle("");
+      setSelectedFolderId(null);
+      setSelectedFolderName("");
+      setIsFolderListOpen(false);
+    }
+  }, [isOpen]);
+
   // 폴더 생성 핸들러
   const handleCreateFolder = async (folderName: string) => {
     if (!user?.id) {
@@ -70,6 +82,8 @@ const UploadModal = ({
       setFolders(folderList);
       // 생성된 폴더 자동 선택
       setSelectedFolderId(newFolder.folderId);
+      setSelectedFolderName(newFolder.folderName);
+      setIsFolderListOpen(false);
       toast.success("폴더가 생성되었습니다.");
     } catch (error) {
       console.error("폴더 생성 실패:", error);
@@ -143,38 +157,92 @@ const UploadModal = ({
 
         {/* 폴더 선택 */}
         <div className="mb-6">
-          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
-            {translations[language].home.folder.folderName}
-          </label>
-          <div className="flex gap-2">
-            <select
-              value={selectedFolderId || ""}
-              onChange={(e) =>
-                setSelectedFolderId(
-                  e.target.value ? Number(e.target.value) : null
-                )
-              }
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="">폴더를 선택하세요</option>
-              {isLoadingFolders ? (
-                <option disabled>로딩 중...</option>
-              ) : folders.length === 0 ? (
-                <option disabled>폴더가 없습니다</option>
-              ) : (
-                folders.map((folder) => (
-                  <option key={folder.folderId} value={folder.folderId}>
-                    {folder.folderName}
-                  </option>
-                ))
-              )}
-            </select>
+          <div className="border border-gray-300 rounded-lg overflow-hidden">
+            {/* 폴더 선택 헤더 */}
             <button
-              onClick={() => setIsCreateFolderModalOpen(true)}
-              className="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm font-medium whitespace-nowrap"
+              onClick={() => setIsFolderListOpen(!isFolderListOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition-colors"
             >
-              + {translations[language].home.folder.create}
+              <span className="text-gray-700 font-Pretendard text-sm">
+                {selectedFolderName || "강의 폴더를 선택해 주세요"}
+              </span>
+              <svg
+                className={`w-5 h-5 text-gray-400 transition-transform ${
+                  isFolderListOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </button>
+
+            {/* 폴더 목록 */}
+            {isFolderListOpen && (
+              <div className="border-t border-gray-200 bg-white">
+                {isLoadingFolders ? (
+                  <div className="px-4 py-3 text-sm text-gray-400 text-center">
+                    로딩 중...
+                  </div>
+                ) : folders.length === 0 ? (
+                  <div className="px-4 py-3 text-sm text-gray-400 text-center">
+                    폴더가 없습니다
+                  </div>
+                ) : (
+                  <div className="max-h-48 overflow-y-auto">
+                    {folders.map((folder) => (
+                      <button
+                        key={folder.folderId}
+                        onClick={() => {
+                          setSelectedFolderId(folder.folderId);
+                          setSelectedFolderName(folder.folderName);
+                          setIsFolderListOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-2 ${
+                          selectedFolderId === folder.folderId
+                            ? "bg-primary/5 text-primary"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        <svg
+                          className="w-4 h-4 shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                          />
+                        </svg>
+                        <span className="font-Pretendard text-sm">
+                          {folder.folderName}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {/* 폴더 추가 버튼 */}
+                <button
+                  onClick={() => {
+                    setIsFolderListOpen(false);
+                    setIsCreateFolderModalOpen(true);
+                  }}
+                  className="w-full text-left px-4 py-3 border-t border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-primary font-Pretendard text-sm"
+                >
+                  <span className="text-xl font-medium">+</span>
+                  <span>강의폴더 추가</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
