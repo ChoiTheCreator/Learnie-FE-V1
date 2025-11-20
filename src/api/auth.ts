@@ -3,37 +3,42 @@ import type { Language } from "../store/useLanguageStore";
 
 // 회원가입 API
 export interface SignupRequest {
-  userid: string;
+  user_id: string;
   username: string;
   password: string;
-  language: Language;
+  language: string;
 }
 
 export interface SignupResponse {
-  success: boolean;
+  success?: boolean;
   message?: string;
+  // API 응답 형식에 따라 추가 가능
 }
 
 export const signupAPI = async (data: SignupRequest): Promise<SignupResponse> => {
-  const response = await axiosInstance.post<SignupResponse>("/auth/signup", data);
+  const response = await axiosInstance.post<SignupResponse>("/api/users/signup", data);
   return response.data;
 };
 
 // 로그인 API
 export interface LoginRequest {
-  email: string;
+  user_id: string;
   password: string;
 }
 
 export interface LoginResponse {
-  name: string;
-  email: string;
-  aiTutorToken: string;
-  language: Language;
+  name?: string;
+  username?: string;
+  user_id?: string;
+  email?: string;
+  aiTutorToken?: string;
+  token?: string;
+  language?: Language;
+  // API 응답 형식에 따라 추가 가능
 }
 
 export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
-  const response = await axiosInstance.post<LoginResponse>("/auth/login", data);
+  const response = await axiosInstance.post<LoginResponse>("/api/users/login", data);
   return response.data;
 };
 

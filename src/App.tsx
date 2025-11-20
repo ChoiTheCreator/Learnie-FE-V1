@@ -1,5 +1,6 @@
 // src/App.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import HomePage from './pages/home';
@@ -10,7 +11,34 @@ import TipsPage from './pages/tips';
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#fff',
+            color: '#333',
+            fontFamily: 'Pretendard, sans-serif',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+      <Routes>
       {/* 루트로 들어오면 /home으로 리다이렉트 */}
       <Route path="/" element={<Navigate to="/login" replace />} />
 
@@ -44,7 +72,8 @@ function App() {
 
       {/* 혹시 없던 주소 들어왔을 때 기본적으로 home으로 보냄 */}
       {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
-    </Routes>
+      </Routes>
+    </>
   );
 }
 

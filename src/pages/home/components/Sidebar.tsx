@@ -156,7 +156,10 @@ const Sidebar = () => {
       {/* 로그아웃 */}
       <div className="p-4 border-t border-gray-200">
         <button
-          onClick={logout}
+          onClick={async () => {
+            await logout();
+            navigate("/login", { replace: true });
+          }}
           className="flex items-center gap-3 px-4 py-3 w-full text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <svg

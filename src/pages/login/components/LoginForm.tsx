@@ -8,22 +8,25 @@ const LoginForm = () => {
   const { login, status, error, session } = useAuth();
   const { setLanguage } = useLanguage();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [userid, setUserid] = useState("");
   const [password, setPassword] = useState("");
 
-  // 로그인 성공 시 사용자 언어 설정
+  // 로그인 성공 시 사용자 언어 설정 및 홈으로 리다이렉트
   useEffect(() => {
     if (session?.language) {
       setLanguage(session.language);
     }
-  }, [session, setLanguage]);
+    if (status === "authenticated") {
+      navigate("/home", { replace: true });
+    }
+  }, [session, status, setLanguage, navigate]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
+    if (!userid.trim() || !password.trim()) {
       return;
     }
-    await login(email, password);
+    await login(userid, password);
   };
 
   const isLoading = status === "loading";
@@ -37,15 +40,15 @@ const LoginForm = () => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="sr-only">
-              이메일
+            <label htmlFor="userid" className="sr-only">
+              사용자 ID
             </label>
             <input
-              id="email"
-              type="email"
-              placeholder="이메일을 입력하세요"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="userid"
+              type="text"
+              placeholder="사용자 ID를 입력하세요"
+              value={userid}
+              onChange={(e) => setUserid(e.target.value)}
               disabled={isLoading}
               className="px-5 py-4 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               required

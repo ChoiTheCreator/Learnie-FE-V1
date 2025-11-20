@@ -2,7 +2,7 @@ import axios from "axios";
 
 // API Base URL - 환경 변수에서 가져오거나 기본값 사용
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+  import.meta.env.VITE_API_BASE_URL || "http://13.125.45.190:8080";
 
 // Axios 인스턴스 생성
 export const axiosInstance = axios.create({

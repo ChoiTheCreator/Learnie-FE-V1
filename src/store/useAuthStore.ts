@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import toast from "react-hot-toast";
 import type { Language } from "./useLanguageStore";
 import { signupAPI, loginAPI, logoutAPI } from "../api/auth";
 
@@ -20,7 +21,7 @@ interface AuthState {
     password: string,
     language: Language
   ) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (userid: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -38,10 +39,13 @@ export const useAuth = create<AuthState>((set) => ({
     set({ status: "loading", error: null });
 
     try {
-      // API 호출 (환경 변수 VITE_API_BASE_URL이 설정되어 있으면 실제 API 호출)
-      if (import.meta.env.VITE_API_BASE_URL) {
-        await signupAPI({ userid, username, password, language });
-      }
+      // API 호출 - API 스펙에 맞게 데이터 변환
+      await signupAPI({
+        user_id: userid,
+        username: username,
+        password: password,
+        language: language,
+      });
 
       // 언어를 localStorage에 저장
       localStorage.setItem("userLanguage", language);
@@ -51,46 +55,91 @@ export const useAuth = create<AuthState>((set) => ({
         status: "unauthenticated",
         error: null,
       });
+
+      // 성공 토스트 표시
+      toast.success("회원가입이 완료되었습니다!");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "회원가입 실패";
+      // API 에러 메시지 추출
+      let errorMessage = "회원가입에 실패했습니다. 다시 시도해주세요.";
+
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        errorMessage =
+          axiosError.response?.data?.message ||
+          axiosError.message ||
+          errorMessage;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
       set({
         status: "unauthenticated",
         error: errorMessage,
       });
-      throw err;
+      throw new Error(errorMessage);
     }
   },
 
-  login: async (email: string, password: string) => {
+  login: async (userid: string, password: string) => {
     set({ status: "loading", error: null });
 
     try {
-      let loginData;
+      // API 호출
+      const loginResponse = await loginAPI({
+        user_id: userid,
+        password: password,
+      });
 
-      // API 호출 (환경 변수 VITE_API_BASE_URL이 설정되어 있으면 실제 API 호출)
-      if (import.meta.env.VITE_API_BASE_URL) {
-        loginData = await loginAPI({ email, password });
-      } else {
-        // Mock 데이터 (개발 환경)
-        const userLanguage = localStorage.getItem("userLanguage") || "ko";
-        loginData = {
-          name: "최원빈 교수님",
-          email: email,
-          aiTutorToken: "mock-ai-token-123",
-          language: userLanguage as Language,
-        };
+      // API 응답에서 토큰 추출 (있으면 사용, 없으면 빈 문자열)
+      const token = loginResponse.aiTutorToken || loginResponse.token || "";
+
+      // 언어 추출 (응답에 없으면 기본값 사용)
+      const userLanguage = (loginResponse.language ||
+        localStorage.getItem("userLanguage") ||
+        "ko") as Language;
+
+      // 세션 데이터 구성
+      const loginData: Session = {
+        name: loginResponse.name || loginResponse.username || userid,
+        email: loginResponse.email || userid,
+        aiTutorToken: token,
+        language: userLanguage,
+      };
+
+      // 토큰과 언어를 localStorage에 저장 (토큰이 있으면만 저장)
+      if (token) {
+        localStorage.setItem("aiTutorToken", token);
       }
-
-      // 토큰과 언어를 localStorage에 저장
-      localStorage.setItem("aiTutorToken", loginData.aiTutorToken);
-      localStorage.setItem("userLanguage", loginData.language);
+      localStorage.setItem("userLanguage", userLanguage);
 
       set({
         session: loginData,
         status: "authenticated",
+        error: null,
       });
+
+      // 성공 토스트 표시
+      toast.success("로그인에 성공했습니다!");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "로그인 실패";
+      // API 에러 메시지 추출
+      let errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
+
+      if (err && typeof err === "object" && "response" in err) {
+        const axiosError = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
+        errorMessage =
+          axiosError.response?.data?.message ||
+          axiosError.message ||
+          errorMessage;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
       set({
         status: "unauthenticated",
         error: errorMessage,
@@ -117,6 +166,9 @@ export const useAuth = create<AuthState>((set) => ({
         status: "unauthenticated",
         error: null,
       });
+
+      // 로그아웃 토스트 표시
+      toast.success("로그아웃되었습니다.");
     }
   },
 }));
