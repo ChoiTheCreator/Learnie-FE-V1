@@ -31,6 +31,7 @@ const ContentDetail = () => {
   const { language, setLanguage } = useLanguage();
   const { user } = useAuth();
   const t = translations[language].home;
+  const toastT = translations[language].toast;
 
   // location.state에서 전달된 강의 데이터 가져오기
   const stateLectureData = location.state?.lectureData as
@@ -58,7 +59,7 @@ const ContentDetail = () => {
       try {
         const lectureId = parseInt(contentId, 10);
         if (isNaN(lectureId)) {
-          toast.error(t.toast.invalidLectureId);
+          toast.error(toastT.invalidLectureId);
           navigate("/home");
           return;
         }
@@ -67,7 +68,7 @@ const ContentDetail = () => {
         setLectureData(data);
       } catch (error) {
         console.error("강의 상세 조회 실패:", error);
-        toast.error(t.toast.failedToLoadLecture);
+        toast.error(toastT.failedToLoadLecture);
         navigate("/home");
       } finally {
         setIsLoading(false);
@@ -118,7 +119,7 @@ const ContentDetail = () => {
         console.log("[ContentDetail] 퀴즈 리스트 상태 업데이트 완료");
       } catch (error) {
         console.error("[ContentDetail] 퀴즈 리스트 조회 실패:", error);
-        toast.error(t.toast.failedToLoadQuizList);
+        toast.error(toastT.failedToLoadQuizList);
       } finally {
         setIsLoadingQuizList(false);
       }
@@ -451,12 +452,12 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!difficulty || !questionType) {
-                              toast.error(t.toast.selectDifficultyAndType);
+                              toast.error(toastT.selectDifficultyAndType);
                               return;
                             }
 
                             if (!lectureData?.lectureId) {
-                              toast.error(t.toast.noLectureData);
+                              toast.error(toastT.noLectureData);
                               return;
                             }
 
@@ -479,7 +480,7 @@ const ContentDetail = () => {
                                 difficulty // "high" | "medium" | "low"
                               );
 
-                              toast.success(t.toast.quizCreated);
+                              toast.success(toastT.quizCreated);
                               
                               // 퀴즈 목록 새로고침
                               try {
@@ -492,7 +493,7 @@ const ContentDetail = () => {
                               }
                             } catch (error) {
                               console.error("퀴즈 생성 실패:", error);
-                              toast.error(t.toast.quizCreationFailed);
+                              toast.error(toastT.quizCreationFailed);
                             } finally {
                               setIsGeneratingQuiz(false);
                             }
@@ -595,7 +596,7 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!lectureData?.lectureId) {
-                              toast.error(t.toast.noLectureData);
+                              toast.error(toastT.noLectureData);
                               return;
                             }
 
@@ -615,10 +616,10 @@ const ContentDetail = () => {
 
                               console.log("[ContentDetail] 생성된 리뷰:", createdReview);
                               setReview(createdReview);
-                              toast.success(t.content.review?.success || t.toast.quizCreated);
+                              toast.success(t.content.review?.success || toastT.quizCreated);
                             } catch (error) {
                               console.error("[ContentDetail] 리뷰 생성 실패:", error);
-                              toast.error(t.content.review?.error || t.toast.quizCreationFailed);
+                              toast.error(t.content.review?.error || toastT.quizCreationFailed);
                             } finally {
                               setIsGeneratingReview(false);
                             }
