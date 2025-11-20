@@ -12,6 +12,7 @@ export interface SignupRequest {
 export interface SignupResponse {
   success?: boolean;
   message?: string;
+  language?: Language | string;
   // API 응답 형식에 따라 추가 가능
 }
 
@@ -33,7 +34,7 @@ export interface LoginResponse {
   email?: string;
   aiTutorToken?: string;
   token?: string;
-  language?: Language;
+  language?: Language | string; // 백엔드에서 "ja", "ko" 등 다양한 형식으로 올 수 있음
   // API 응답 형식에 따라 추가 가능
 }
 

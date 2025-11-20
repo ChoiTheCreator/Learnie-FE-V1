@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import type { Language } from "./useLanguageStore";
+import { useLanguage } from "./useLanguageStore";
 import { signupAPI, loginAPI, logoutAPI } from "../api/auth";
 
 interface Session {
@@ -49,15 +50,36 @@ export const useAuth = create<AuthState>((set) => ({
       };
 
       // API 호출 - API 스펙에 맞게 데이터 변환
-      await signupAPI({
+      const signupResponse = await signupAPI({
         user_id: userid,
         username: username,
         password: password,
         language: languageMap[language] || language.toLowerCase(),
       });
 
+      // 백엔드에서 받은 language가 있으면 사용, 없으면 회원가입 시 선택한 언어 사용
+      const languageMapReverse: Record<string, Language> = {
+        ko: "KR",
+        en: "EN",
+        zh: "CN",
+        ja: "JP",
+        vi: "VI",
+        KR: "KR",
+        EN: "EN",
+        CN: "CN",
+        JP: "JP",
+        VI: "VI",
+      };
+
+      const finalLanguage = signupResponse.language
+        ? languageMapReverse[signupResponse.language] || language
+        : language;
+
       // 언어를 localStorage에 저장
-      localStorage.setItem("userLanguage", language);
+      localStorage.setItem("userLanguage", finalLanguage);
+
+      // 언어 스토어도 업데이트
+      useLanguage.getState().setLanguage(finalLanguage);
 
       // 성공 처리
       set({
@@ -105,9 +127,8 @@ export const useAuth = create<AuthState>((set) => ({
       // API 응답에서 토큰 추출 (있으면 사용, 없으면 빈 문자열)
       const token = loginResponse.aiTutorToken || loginResponse.token || "";
 
-      // 언어 추출 (응답에 없으면 기본값 사용)
+      // 언어 추출 - 백엔드에서 받은 language를 우선 사용
       // 기존 코드(ko, en 등)와 새 코드(KR, EN 등) 모두 지원
-      const storedLang = localStorage.getItem("userLanguage");
       const languageMap: Record<string, Language> = {
         ko: "KR",
         en: "EN",
@@ -119,14 +140,45 @@ export const useAuth = create<AuthState>((set) => ({
         CN: "CN",
         JP: "JP",
         VI: "VI",
+        // 추가 변형 지원
+        korean: "KR",
+        english: "EN",
+        chinese: "CN",
+        japanese: "JP",
+        vietnamese: "VI",
       };
-      const userLanguage = (
-        loginResponse.language
-          ? languageMap[loginResponse.language] || loginResponse.language
-          : storedLang
-          ? languageMap[storedLang] || (storedLang as Language)
-          : "KR"
-      ) as Language;
+      
+      // 백엔드 응답의 language를 우선 사용
+      let userLanguage: Language = "KR"; // 기본값
+      
+      if (loginResponse.language) {
+        const backendLang = String(loginResponse.language).toLowerCase();
+        // 먼저 정확한 매칭 시도
+        if (languageMap[loginResponse.language]) {
+          userLanguage = languageMap[loginResponse.language];
+        } 
+        // 소문자로 변환해서 매칭 시도
+        else if (languageMap[backendLang]) {
+          userLanguage = languageMap[backendLang];
+        }
+        // 대문자로 변환해서 매칭 시도 (JP, KR 등)
+        else if (languageMap[backendLang.toUpperCase()]) {
+          userLanguage = languageMap[backendLang.toUpperCase()];
+        }
+        // 직접 Language 타입인지 확인
+        else {
+          const upperLang = String(loginResponse.language).toUpperCase();
+          if (["KR", "CN", "EN", "JP", "VI"].includes(upperLang)) {
+            userLanguage = upperLang as Language;
+          }
+        }
+        
+        // 디버깅용 로그 (개발 환경에서만)
+        if (import.meta.env.DEV) {
+          console.log("백엔드 language 응답:", loginResponse.language);
+          console.log("변환된 language:", userLanguage);
+        }
+      }
 
       // 세션 데이터 구성
       const loginData: Session = {
