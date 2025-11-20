@@ -72,6 +72,7 @@ export const translations = {
       sidebar: {
         home: "홈",
         courses: "강의 과목",
+        schoolTips: "학교 꿀팁",
         logout: "로그아웃",
       },
       content: {
@@ -162,6 +163,7 @@ export const translations = {
       sidebar: {
         home: "Home",
         courses: "Course Subjects",
+        schoolTips: "School Tips",
         logout: "Logout",
       },
       content: {
@@ -252,6 +254,7 @@ export const translations = {
       sidebar: {
         home: "首页",
         courses: "课程科目",
+        schoolTips: "学校小贴士",
         logout: "登出",
       },
       content: {
@@ -342,6 +345,7 @@ export const translations = {
       sidebar: {
         home: "ホーム",
         courses: "講義科目",
+        schoolTips: "学校のコツ",
         logout: "ログアウト",
       },
       content: {
@@ -432,6 +436,7 @@ export const translations = {
       sidebar: {
         home: "Trang chủ",
         courses: "Môn học",
+        schoolTips: "Mẹo học tập",
         logout: "Đăng xuất",
       },
       content: {
@@ -522,6 +527,7 @@ export const translations = {
       sidebar: {
         home: "Нүүр",
         courses: "Хичээлийн сэдвүүд",
+        schoolTips: "Сургуулийн зөвлөмж",
         logout: "Гарах",
       },
       content: {
