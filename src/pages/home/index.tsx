@@ -215,11 +215,11 @@ const HomePage = () => {
 
         {/* 메인 콘텐츠 영역 */}
         <main className="flex-1 flex flex-col overflow-hidden bg-white relative">
-          {/* 블러 처리 오버레이 */}
+          {/* 블러 처리 오버레이 - 더 진하게 */}
           {(isUploading || isUploadComplete) && (
             <div
-              className={`absolute inset-0 bg-white/80 backdrop-blur-md z-40 transition-opacity duration-500 ${
-                isUploadComplete ? "opacity-100" : "opacity-50"
+              className={`absolute inset-0 bg-white/95 backdrop-blur-lg z-40 transition-opacity duration-500 ${
+                isUploadComplete ? "opacity-100" : "opacity-100"
               }`}
             />
           )}
@@ -237,7 +237,7 @@ const HomePage = () => {
 
           {/* 스켈레톤 UI */}
           {isUploading && !isUploadComplete && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center p-8">
+            <div className="absolute inset-0 z-50 flex items-center justify-center p-8">
               <UploadSkeleton />
             </div>
           )}

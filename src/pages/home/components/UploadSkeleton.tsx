@@ -24,9 +24,9 @@ const UploadSkeleton = () => {
   return (
     <div className="space-y-6">
       {/* 업로드 중 메시지 - QuizSkeleton과 동일한 스타일 */}
-      <div className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/30 rounded-xl p-8 mb-6 overflow-hidden">
-        {/* 배경 애니메이션 */}
-        <div className="absolute inset-0 opacity-20">
+      <div className="relative bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-2 border-primary/50 rounded-xl p-8 mb-6 overflow-hidden shadow-lg">
+        {/* 배경 애니메이션 - 더 진하게 */}
+        <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 left-0 w-32 h-32 bg-primary rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-primary rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
         </div>
