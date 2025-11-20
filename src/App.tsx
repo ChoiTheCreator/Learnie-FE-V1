@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import HomePage from './pages/home';
+import ContentDetail from './pages/home/components/ContentDetail';
 import QuizDetail from './pages/home/components/QuizDetail';
 import TipsPage from './pages/tips';
 // Next의 (routes)/home/page.tsx 이런 구조를 그대로 import한다고 가정
@@ -15,6 +16,9 @@ function App() {
 
       {/* /home */}
       <Route path="/home" element={<HomePage />} />
+      
+      {/* /home/content/:id - 콘텐츠 상세 페이지 (요약/퀴즈/심화) */}
+      <Route path="/home/content/:contentId" element={<ContentDetail />} />
       
       {/* /home/quiz/:id */}
       <Route path="/home/quiz/:id" element={<QuizDetail />} />

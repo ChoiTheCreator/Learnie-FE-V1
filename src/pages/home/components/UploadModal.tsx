@@ -37,20 +37,27 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 w-full max-w-md shadow-xl">
-        {/* 파일 정보 */}
-        <div className="mb-4">
-          <div className="bg-gray-100 border border-gray-300 rounded px-4 py-3 min-h-[60px] flex flex-col justify-center">
-            <p className="text-gray-600 text-sm font-Pretendard mb-2">{t.fileInfo}</p>
-            <div className="space-y-1">
-              {files.map((file, index) => (
-                <div key={index} className="text-gray-800 text-sm font-Pretendard">
-                  <span className="font-medium">{file.name}</span>
-                  <span className="text-gray-500 ml-2">({formatFileSize(file.size)})</span>
-                </div>
-              ))}
-            </div>
+        {/* 파일 정보 - 점선 테두리 박스 */}
+        <div className="mb-6">
+          <div className="border-2 border-dashed border-primary/50 rounded-lg px-4 py-6 min-h-[80px] flex items-center justify-center">
+            {files.length > 0 ? (
+              <div className="text-center">
+                {files.map((file, index) => (
+                  <div
+                    key={index}
+                    className="text-primary font-Pretendard text-sm font-medium"
+                  >
+                    {file.name}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm font-Pretendard">
+                {t.fileInfo}
+              </p>
+            )}
           </div>
         </div>
 
@@ -60,8 +67,8 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
             type="text"
             value={classTitle}
             onChange={(e) => setClassTitle(e.target.value)}
-            placeholder={t.classTitle}
-            className="w-full border border-gray-300 rounded px-4 py-3 text-gray-800 font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="제목을 입력해 주세요"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
 
@@ -69,14 +76,14 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
         <div className="flex gap-3 justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 rounded text-gray-700 font-Pretendard font-medium hover:bg-gray-50 transition-colors"
+            className="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-Pretendard font-medium hover:bg-gray-50 transition-colors"
           >
             {t.cancel}
           </button>
           <button
             onClick={handleConfirm}
             disabled={!classTitle.trim() || files.length === 0}
-            className="px-6 py-2 border border-gray-300 rounded text-gray-700 font-Pretendard font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-primary text-white rounded-lg font-Pretendard font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t.confirm}
           </button>

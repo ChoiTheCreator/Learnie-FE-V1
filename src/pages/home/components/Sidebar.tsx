@@ -10,11 +10,26 @@ const Sidebar = () => {
   const t = translations[language];
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
 
-  // 임시 강의 목록 (실제로는 API에서 가져옴)
-  const courses = [
-    "콘텐츠 스토리 텔링",
-    "게임 엔진 1",
-    "역사와 문명",
+  // 임시 기록 데이터 (실제로는 API에서 가져옴)
+  const mockRecords = [
+    {
+      id: "1",
+      title: "콘텐츠 스토리 텔링",
+      createdAt: "2024-01-15",
+      updatedAt: "2024-01-15",
+    },
+    {
+      id: "2",
+      title: "게임 엔진 1",
+      createdAt: "2024-01-16",
+      updatedAt: "2024-01-16",
+    },
+    {
+      id: "3",
+      title: "역사와 문명",
+      createdAt: "2024-01-17",
+      updatedAt: "2024-01-17",
+    },
   ];
 
   return (
@@ -89,18 +104,29 @@ const Sidebar = () => {
               </svg>
             </button>
             {isCoursesOpen && (
-              <ul className="mt-2 ml-8 space-y-1">
-                {courses.map((course, index) => (
-                  <li key={index}>
-                    <a
-                      href={`/course/${index}`}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
-                    >
-                      {course}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-2 ml-8">
+                {mockRecords.length === 0 ? (
+                  <div className="px-4 py-2 text-sm text-gray-400">
+                    기록된 내역이 없습니다
+                  </div>
+                ) : (
+                  <ul className="space-y-1">
+                    {mockRecords.map((record) => (
+                      <li key={record.id}>
+                        <button
+                          onClick={() => navigate(`/home/content/${record.id}`)}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                        >
+                          <div className="font-medium">{record.title}</div>
+                          <div className="text-xs text-gray-400 mt-0.5">
+                            {record.createdAt}
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </li>
           <li>
@@ -143,7 +169,7 @@ const Sidebar = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"
             />
           </svg>
           {t.home.sidebar.logout}
