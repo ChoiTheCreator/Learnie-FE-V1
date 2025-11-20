@@ -73,6 +73,19 @@ export const translations = {
         signupFailed: "회원가입에 실패했습니다",
       },
     },
+    login: {
+      title: "Orbit AI 시작하기",
+      userid: "사용자 ID",
+      useridPlaceholder: "사용자 ID를 입력하세요",
+      password: "비밀번호",
+      passwordPlaceholder: "비밀번호를 입력하세요",
+      loginButton: "로그인",
+      loginLoading: "로그인 중...",
+      signupButton: "회원가입",
+      errors: {
+        loginFailed: "로그인에 실패했습니다",
+      },
+    },
     home: {
       greeting: "안녕하세요!",
       welcomeMessage: "홍길동 교수님을 도와드릴 AI Tutor예요",
@@ -177,6 +190,19 @@ export const translations = {
         passwordMismatch: "Passwords do not match",
         passwordTooShort: "Password must be at least 8 characters",
         signupFailed: "Sign up failed",
+      },
+    },
+    login: {
+      title: "Get Started with Orbit AI",
+      userid: "User ID",
+      useridPlaceholder: "Enter your user ID",
+      password: "Password",
+      passwordPlaceholder: "Enter your password",
+      loginButton: "Log In",
+      loginLoading: "Logging in...",
+      signupButton: "Sign Up",
+      errors: {
+        loginFailed: "Login failed",
       },
     },
     home: {
@@ -287,6 +313,19 @@ export const translations = {
         signupFailed: "注册失败",
       },
     },
+    login: {
+      title: "开始使用Orbit AI",
+      userid: "用户ID",
+      useridPlaceholder: "请输入您的用户ID",
+      password: "密码",
+      passwordPlaceholder: "请输入您的密码",
+      loginButton: "登录",
+      loginLoading: "登录中...",
+      signupButton: "注册",
+      errors: {
+        loginFailed: "登录失败",
+      },
+    },
     home: {
       greeting: "你好！",
       welcomeMessage: "我是帮助洪吉童教授的AI Tutor",
@@ -390,6 +429,19 @@ export const translations = {
         passwordMismatch: "パスワードが一致しません",
         passwordTooShort: "パスワードは8文字以上である必要があります",
         signupFailed: "会員登録に失敗しました",
+      },
+    },
+    login: {
+      title: "Orbit AIを始める",
+      userid: "ユーザーID",
+      useridPlaceholder: "ユーザーIDを入力してください",
+      password: "パスワード",
+      passwordPlaceholder: "パスワードを入力してください",
+      loginButton: "ログイン",
+      loginLoading: "ログイン中...",
+      signupButton: "会員登録",
+      errors: {
+        loginFailed: "ログインに失敗しました",
       },
     },
     home: {
@@ -497,6 +549,19 @@ export const translations = {
         passwordMismatch: "Mật khẩu không khớp",
         passwordTooShort: "Mật khẩu phải có ít nhất 8 ký tự",
         signupFailed: "Đăng ký thất bại",
+      },
+    },
+    login: {
+      title: "Bắt đầu với Orbit AI",
+      userid: "ID người dùng",
+      useridPlaceholder: "Nhập ID người dùng của bạn",
+      password: "Mật khẩu",
+      passwordPlaceholder: "Nhập mật khẩu của bạn",
+      loginButton: "Đăng nhập",
+      loginLoading: "Đang đăng nhập...",
+      signupButton: "Đăng ký",
+      errors: {
+        loginFailed: "Đăng nhập thất bại",
       },
     },
     home: {

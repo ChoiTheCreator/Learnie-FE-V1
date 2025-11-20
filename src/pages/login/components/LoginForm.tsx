@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/useAuthStore";
-import { useLanguage } from "../../../store/useLanguageStore";
+import { useLanguage, translations } from "../../../store/useLanguageStore";
 
 const LoginForm = () => {
   const { login, status, error, user } = useAuth();
-  const { setLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [userid, setUserid] = useState("");
   const [password, setPassword] = useState("");
+  
+  const t = translations[language].login;
 
   // 로그인 성공 시 사용자 언어 설정 및 홈으로 리다이렉트
   useEffect(() => {
@@ -35,18 +37,18 @@ const LoginForm = () => {
     <div className="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 border-l border-gray-200">
       <div className="w-full max-w-sm px-8 py-12">
         <h2 className="text-gray-900 font-Pretendard font-semibold text-2xl md:text-3xl mb-10 text-center">
-          Orbit AI 시작하기
+          {t.title}
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <label htmlFor="userid" className="sr-only">
-              사용자 ID
+              {t.userid}
             </label>
             <input
               id="userid"
               type="text"
-              placeholder="사용자 ID를 입력하세요"
+              placeholder={t.useridPlaceholder}
               value={userid}
               onChange={(e) => setUserid(e.target.value)}
               disabled={isLoading}
@@ -58,12 +60,12 @@ const LoginForm = () => {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="password" className="sr-only">
-              비밀번호
+              {t.password}
             </label>
             <input
               id="password"
               type="password"
-              placeholder="비밀번호를 입력하세요"
+              placeholder={t.passwordPlaceholder}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
@@ -89,7 +91,7 @@ const LoginForm = () => {
               disabled={isLoading}
               className="flex-1 bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 hover:shadow-primary/30"
             >
-              {isLoading ? "로그인 중..." : "로그인"}
+              {isLoading ? t.loginLoading : t.loginButton}
             </button>
             <button
               type="button"
@@ -97,7 +99,7 @@ const LoginForm = () => {
               disabled={isLoading}
               className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              회원가입
+              {t.signupButton}
             </button>
           </div>
         </form>
