@@ -26,7 +26,7 @@ const Sidebar = ({
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
-  // 폴더 목록 조회 함수 (클릭 시 호출)
+  // 폴더 목록 조회 함수
   const fetchFolders = async () => {
     if (!user?.id) return;
 
@@ -43,15 +43,14 @@ const Sidebar = ({
     }
   };
 
-  // 강의과목 클릭 시 폴더 목록 조회
+  // 폴더 목록 자동 조회
+  useEffect(() => {
+    fetchFolders();
+  }, [user?.id, refreshTrigger]); // refreshTrigger가 변경되면 폴더 목록 재조회
+
+  // 강의과목 클릭 핸들러
   const handleCoursesClick = () => {
-    const newIsOpen = !isCoursesOpen;
-    setIsCoursesOpen(newIsOpen);
-    
-    // 펼칠 때만 폴더 목록 조회
-    if (newIsOpen && folders.length === 0) {
-      fetchFolders();
-    }
+    setIsCoursesOpen(!isCoursesOpen);
   };
 
   // 우클릭 메뉴 닫기
