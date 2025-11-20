@@ -68,7 +68,7 @@ export interface QuizDetailRequest {
 export interface QuizDetailItem {
   quizId: number;
   lectureId: number;
-  question: string;
+  statement: string;
   answer?: string;
   questionType?: string;
 }
@@ -98,7 +98,7 @@ export const getQuizDetailAPI = async (
   console.log("[퀴즈 상세 조회 API] 문제:", {
     quizId: response.data.quizId,
     lectureId: response.data.lectureId,
-    question: response.data.question,
+    statement: response.data.statement,
     answer: response.data.answer,
     questionType: response.data.questionType,
   });

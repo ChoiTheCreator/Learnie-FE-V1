@@ -72,7 +72,7 @@ const QuizDetail = () => {
           console.log(`[QuizDetail] 퀴즈 #${idx + 1}:`, {
             quizId: detail?.quizId,
             lectureId: detail?.lectureId,
-            question: detail?.question,
+            statement: detail?.statement,
             answer: detail?.answer,
             questionType: detail?.questionType,
             전체데이터: detail,
@@ -262,7 +262,7 @@ const QuizDetail = () => {
                         <tbody>
                           {quizDetails.map((quiz, index) => {
                             const quizId = quiz?.quizId || index;
-                            const problem = quiz?.question || "";
+                            const problem = quiz?.statement || "";
                             const answer = quiz?.answer || "";
                             const questionType =
                               quiz?.questionType || quizType || "";
