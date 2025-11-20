@@ -95,3 +95,48 @@ export const getLectureDetailAPI = async (
   );
   return response.data;
 };
+
+// 강의 리뷰 생성 요청
+export interface CreateReviewRequest {
+  lectureId: number;
+  title: string;
+  review: string;
+}
+
+// 강의 리뷰 생성 응답
+export interface CreateReviewResponse {
+  lectureId: number;
+  title: string;
+  review: string;
+}
+
+// 강의 리뷰 생성 API
+export const createReviewAPI = async (
+  lectureId: number,
+  title: string,
+  review: string
+): Promise<CreateReviewResponse> => {
+  const requestData: CreateReviewRequest = {
+    lectureId,
+    title,
+    review,
+  };
+
+  console.log(
+    "[강의 리뷰 생성 API] Request Body:",
+    JSON.stringify(requestData, null, 2)
+  );
+  console.log("[강의 리뷰 생성 API] 요청 파라미터:", {
+    lectureId,
+    title,
+    review,
+  });
+
+  const response = await axiosInstance.post<CreateReviewResponse>(
+    `/lectures/review/${lectureId}`,
+    requestData
+  );
+
+  console.log("[강의 리뷰 생성 API] 응답 데이터:", response.data);
+  return response.data;
+};

@@ -4,7 +4,9 @@ import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
 import {
   getLectureDetailAPI,
+  createReviewAPI,
   type LectureUploadResponse,
+  type CreateReviewResponse,
 } from "../../../api/lecture";
 import { createQuizAPI, getQuizListAPI, type QuizListItem } from "../../../api/quiz";
 import QuizSkeleton from "./QuizSkeleton";
@@ -127,10 +129,11 @@ const ContentDetail = () => {
     }
   }, [lectureData?.lectureId, activeTab]);
 
-  // 계획 생성 설정 상태
-  const [showPlanCreateForm, setShowPlanCreateForm] = useState(false);
-  const [goalDays, setGoalDays] = useState<number>(1);
-  const [dailyHours, setDailyHours] = useState<number>(1);
+  // 강의 리뷰 상태
+  const [review, setReview] = useState<CreateReviewResponse | null>(null);
+  const [isGeneratingReview, setIsGeneratingReview] = useState(false);
+  const [showReviewCreateForm, setShowReviewCreateForm] = useState(false);
+  const [reviewTitle, setReviewTitle] = useState<string>("");
 
   if (isLoading) {
     return (
@@ -599,88 +602,123 @@ const ContentDetail = () => {
 
                 {activeTab === "advanced" && (
                   <div>
-                    <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                      {t.content.advanced}
-                    </h2>
-
-                    {/* 계획 생성 폼이 보이지 않을 때 */}
-                    {!showPlanCreateForm && (
-                      <div className="flex flex-col items-center justify-center py-12">
-                        <p className="text-gray-600 font-Pretendard mb-6">
-                          현재 생성 계획 없음
-                        </p>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
+                        {t.content.advanced}
+                      </h2>
+                      {!review && !showReviewCreateForm && (
                         <button
-                          onClick={() => setShowPlanCreateForm(true)}
-                          className="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900"
+                          onClick={() => setShowReviewCreateForm(true)}
+                          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
                         >
-                          계획 생성
+                          리뷰 생성
                         </button>
+                      )}
+                    </div>
+
+                    {/* 리뷰 생성 폼 */}
+                    {showReviewCreateForm && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                        <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4">
+                          강의 리뷰 생성
+                        </h3>
+
+                        {/* 리뷰 제목 */}
+                        <div className="mb-6">
+                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
+                            제목
+                          </label>
+                          <input
+                            type="text"
+                            value={reviewTitle}
+                            onChange={(e) => setReviewTitle(e.target.value)}
+                            placeholder="리뷰 제목을 입력하세요"
+                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+
+                        {/* 리뷰 생성 버튼 */}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={async () => {
+                              if (!reviewTitle.trim()) {
+                                toast.error("제목을 입력해주세요.");
+                                return;
+                              }
+
+                              if (!lectureData?.lectureId) {
+                                toast.error("강의 정보를 불러올 수 없습니다.");
+                                return;
+                              }
+
+                              setIsGeneratingReview(true);
+                              setShowReviewCreateForm(false);
+
+                              try {
+                                console.log("[ContentDetail] 리뷰 생성 시작:", {
+                                  lectureId: lectureData.lectureId,
+                                  title: reviewTitle,
+                                });
+
+                                // API는 review 필드가 필요하므로 제목을 review로도 사용
+                                const createdReview = await createReviewAPI(
+                                  lectureData.lectureId,
+                                  reviewTitle,
+                                  reviewTitle
+                                );
+
+                                console.log("[ContentDetail] 생성된 리뷰:", createdReview);
+                                setReview(createdReview);
+                                setReviewTitle("");
+                                toast.success("리뷰가 생성되었습니다!");
+                              } catch (error) {
+                                console.error("[ContentDetail] 리뷰 생성 실패:", error);
+                                toast.error("리뷰 생성에 실패했습니다.");
+                                setShowReviewCreateForm(true);
+                              } finally {
+                                setIsGeneratingReview(false);
+                              }
+                            }}
+                            disabled={!reviewTitle.trim() || !lectureData?.lectureId || isGeneratingReview}
+                            className="flex-1 px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {isGeneratingReview ? "생성 중..." : "리뷰 생성"}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowReviewCreateForm(false);
+                              setReviewTitle("");
+                            }}
+                            className="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900"
+                          >
+                            취소
+                          </button>
+                        </div>
                       </div>
                     )}
 
-                    {/* 계획 생성 폼 */}
-                    {showPlanCreateForm && (
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                        <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-6">
-                          계획
-                        </h3>
+                    {/* 리뷰 생성 중 */}
+                    {isGeneratingReview && (
+                      <div className="p-8 text-center text-gray-500 font-Pretendard">
+                        리뷰를 생성하는 중...
+                      </div>
+                    )}
 
-                        {/* 목표 설정 */}
+                    {/* 생성된 리뷰 표시 */}
+                    {review && !isGeneratingReview && (
+                      <div className="text-gray-700 font-Pretendard leading-relaxed">
                         <div className="mb-4">
-                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
-                            목표 설정
-                          </label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min="1"
-                              value={goalDays}
-                              onChange={(e) =>
-                                setGoalDays(Number(e.target.value))
-                              }
-                              className="px-3 py-2 border border-gray-300 rounded text-sm font-Pretendard w-24 focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                            <span className="text-sm text-gray-600 font-Pretendard">
-                              일
-                            </span>
-                          </div>
+                          <h3 className="text-lg font-Pretendard font-semibold text-gray-900">
+                            {review.title}
+                          </h3>
                         </div>
+                      </div>
+                    )}
 
-                        {/* 일일 가용 시간 */}
-                        <div className="mb-6">
-                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
-                            일일 가용 시간
-                          </label>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min="1"
-                              max="24"
-                              value={dailyHours}
-                              onChange={(e) =>
-                                setDailyHours(Number(e.target.value))
-                              }
-                              className="px-3 py-2 border border-gray-300 rounded text-sm font-Pretendard w-24 focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                            <span className="text-sm text-gray-600 font-Pretendard">
-                              시간
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* 계획 생성 버튼 */}
-                        <button
-                          onClick={async () => {
-                            console.log("계획 생성:", {
-                              goalDays,
-                              dailyHours,
-                            });
-                            setShowPlanCreateForm(false);
-                          }}
-                          className="w-full px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900"
-                        >
-                          계획 생성
-                        </button>
+                    {/* 리뷰가 없고 폼도 안 보일 때 */}
+                    {!review && !showReviewCreateForm && !isGeneratingReview && (
+                      <div className="text-gray-700 font-Pretendard leading-relaxed">
+                        <p>{t.content.advancedContent}</p>
                       </div>
                     )}
                   </div>

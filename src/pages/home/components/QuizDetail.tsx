@@ -107,15 +107,6 @@ const QuizDetail = () => {
     );
   };
 
-  const handleGeneratePDF = () => {
-    if (selectedQuizzes.length === 0) {
-      alert("선택된 퀴즈가 없습니다.");
-      return;
-    }
-    // TODO: PDF 생성 로직
-    console.log("PDF 생성:", selectedQuizzes);
-  };
-
   return (
     <div className="flex h-screen bg-white overflow-hidden relative">
       <Sidebar />
@@ -330,16 +321,6 @@ const QuizDetail = () => {
                       </table>
                     </div>
                   )}
-
-                  {/* PDF 생성 버튼 */}
-                  <div className="flex justify-end">
-                    <button
-                      onClick={handleGeneratePDF}
-                      className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard font-semibold"
-                    >
-                      {t.content.generatePDF}
-                    </button>
-                  </div>
                 </div>
               )}
 
