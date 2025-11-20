@@ -263,7 +263,8 @@ const QuizDetail = () => {
                           {quizDetails.map((quiz, index) => {
                             const quizId = quiz?.quizId || index;
                             const problem = quiz?.statement || "";
-                            const answer = quiz?.answer || "";
+                            // answer 속성을 명시적으로 확인 (서버 응답 구조에 맞춤, anwser 오타도 처리)
+                            const answer = quiz?.answer || quiz?.anwser || "";
                             const questionType =
                               quiz?.questionType || quizType || "";
 
@@ -290,7 +291,15 @@ const QuizDetail = () => {
                                 <td className="px-4 py-3">
                                   {visibleAnswers.includes(quizId) ? (
                                     <div className="flex flex-col gap-2">
-                                      <div className="text-sm font-Pretendard text-gray-700">
+                                      <div
+                                        className={`text-sm font-Pretendard font-semibold ${
+                                          answer === "O" || answer === "o"
+                                            ? "text-green-600"
+                                            : answer === "X" || answer === "x"
+                                            ? "text-red-600"
+                                            : "text-gray-700"
+                                        }`}
+                                      >
                                         {answer || "-"}
                                       </div>
                                       <button

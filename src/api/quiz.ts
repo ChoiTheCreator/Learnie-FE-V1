@@ -70,6 +70,7 @@ export interface QuizDetailItem {
   lectureId: number;
   statement: string;
   answer?: string;
+  anwser?: string; // 서버 응답에서 오타로 올 수 있음
   questionType?: string;
 }
 
