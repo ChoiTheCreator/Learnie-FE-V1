@@ -167,7 +167,7 @@ const UploadModal = ({
               className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 transition-colors"
             >
               <span className="text-gray-700 font-Pretendard text-sm">
-                {selectedFolderName || "강의 폴더를 선택해 주세요"}
+                {selectedFolderName || t.selectFolder}
               </span>
               <svg
                 className={`w-5 h-5 text-gray-400 transition-transform ${

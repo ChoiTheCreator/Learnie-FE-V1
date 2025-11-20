@@ -162,6 +162,7 @@ export const translations = {
         classTitle: "수업 제목 입력",
         cancel: "취소",
         confirm: "확인",
+        selectFolder: "강의 폴더를 선택해 주세요",
       },
       uploadArea: {
         title: "파일을 첨부해 주세요!",
@@ -385,6 +386,7 @@ export const translations = {
         classTitle: "Enter Class Title",
         cancel: "Cancel",
         confirm: "Confirm",
+        selectFolder: "Please select a lecture folder",
       },
       uploadArea: {
         title: "Please attach a file!",
@@ -576,6 +578,7 @@ export const translations = {
         classTitle: "输入课程标题",
         cancel: "取消",
         confirm: "确认",
+        selectFolder: "请选择讲座文件夹",
       },
       uploadArea: {
         title: "请附加文件！",
@@ -765,6 +768,7 @@ export const translations = {
         classTitle: "授業タイトル入力",
         cancel: "キャンセル",
         confirm: "確認",
+        selectFolder: "講義フォルダを選択してください",
       },
       uploadArea: {
         title: "ファイルを添付してください！",
@@ -959,6 +963,7 @@ export const translations = {
         classTitle: "Nhập tiêu đề lớp học",
         cancel: "Hủy",
         confirm: "Xác nhận",
+        selectFolder: "Vui lòng chọn thư mục bài giảng",
       },
       uploadArea: {
         title: "Vui lòng đính kèm tệp!",
