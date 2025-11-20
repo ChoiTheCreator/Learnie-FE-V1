@@ -41,24 +41,38 @@ export const uploadLectureAPI = async (
   // 파일 크기 검증
   if (file.size > MAX_FILE_SIZE) {
     throw new Error(
-      `파일 크기가 너무 큽니다. 최대 ${MAX_FILE_SIZE / (1024 * 1024)}MB까지 업로드 가능합니다.`
+      `파일 크기가 너무 큽니다. 최대 ${
+        MAX_FILE_SIZE / (1024 * 1024)
+      }MB까지 업로드 가능합니다.`
     );
   }
 
   const formData = new FormData();
+
+  // file: multipart/form-data로 추가
   formData.append("file", file);
-  
-  // request 객체의 각 필드를 개별적으로 FormData에 추가 (multipart/form-data)
-  formData.append("request[userId]", userId.toString());
-  formData.append("request[title]", title);
-  formData.append("request[folderId]", folderId.toString());
+
+  // request: JSON 객체를 Blob으로 변환하여 FormData에 추가
+  const requestData = {
+    userId: userId,
+    folderId: folderId,
+    title: title,
+  };
+  const requestBlob = new Blob([JSON.stringify(requestData)], {
+    type: "application/json",
+  });
+  formData.append("request", requestBlob);
 
   // Content-Type 헤더를 명시적으로 설정하지 않음 (axios가 자동으로 boundary 포함하여 설정)
+  // 파일 업로드는 시간이 오래 걸릴 수 있으므로 타임아웃 제거
   const response = await axiosInstance.post<LectureUploadResponse>(
-    `/lectures/${userId}`,
-    formData
+    `/lectures`,
+    formData,
+    {
+      timeout: 0, // 타임아웃 없음
+    }
   );
-  
+
   return response.data;
 };
 
@@ -71,4 +85,3 @@ export const getLectureListByFolderAPI = async (
   );
   return response.data;
 };
-

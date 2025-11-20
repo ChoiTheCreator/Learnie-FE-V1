@@ -6,6 +6,7 @@ import type { LectureUploadResponse } from "../../../api/lecture";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
+import ReactMarkdown from "react-markdown";
 
 const LANGUAGE_OPTIONS = [
   { code: "KR" as const, label: "한국어" },
@@ -191,8 +192,8 @@ const ContentDetail = () => {
                     </h2>
                     <div className="text-gray-700 font-Pretendard leading-relaxed">
                       {lectureData?.summary ? (
-                        <div className="whitespace-pre-wrap">
-                          {lectureData.summary}
+                        <div className="prose prose-sm max-w-none">
+                          <ReactMarkdown>{lectureData.summary}</ReactMarkdown>
                         </div>
                       ) : (
                         <>
