@@ -17,7 +17,7 @@ export interface SignupResponse {
 }
 
 export const signupAPI = async (data: SignupRequest): Promise<SignupResponse> => {
-  const response = await axiosInstance.post<SignupResponse>("/api/users/signup", data);
+  const response = await axiosInstance.post<SignupResponse>("/user/signup", data);
   return response.data;
 };
 
@@ -37,7 +37,7 @@ export interface LoginResponse {
 }
 
 export const loginAPI = async (data: LoginRequest): Promise<LoginResponse> => {
-  const response = await axiosInstance.post<LoginResponse>("/api/users/login", data);
+  const response = await axiosInstance.post<LoginResponse>("/user/login", data);
   return response.data;
 };
 
