@@ -394,29 +394,6 @@ const HomePage = () => {
                   }
                 }}
               />
-
-              {/* 폴더 생성 버튼 */}
-              <div className="absolute bottom-4 right-4 z-10">
-                <button
-                  onClick={() => setIsCreateFolderModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm font-medium shadow-lg"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  {t.uploadArea.createFolder}
-                </button>
-              </div>
             </div>
           )}
         </main>
